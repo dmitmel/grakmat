@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<title>ref - grakmat</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">grakmat</a>&nbsp;/&nbsp;<a href="index.html">org.willthisfly.grakmat</a>&nbsp;/&nbsp;<a href=".">ref</a><br/>
+<br/>
+<h1>ref</h1>
+<a name="org.willthisfly.grakmat$ref(kotlin.Function0((org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.ref.A)))))"></a>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">ref</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$ref(kotlin.Function0((org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.ref.A)))))/target">target</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-referenced-parser/index.html"><span class="identifier">ReferencedParser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates referenced parser.
+Useful, when you use fields to hold rules:</p>
+<pre><code>object Math {
+    private val exprRuleRef = ref { exprRule }
+    private val mainRule = exprRuleRef    // See? exprRule is declared later, but you can still use it through the reference!
+    private val exprRule = ...
+}</code></pre>
+<h3>Parameters</h3>
+
+<p><a name="target"></a>
+<code>target</code> - Function that returns target parser.
+</BODY>
+</HTML>

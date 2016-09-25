@@ -1,0 +1,10 @@
+.gradle/
+.idea/workspace.xml
+build/kotlin*
+build/tmp
+src/main/kotlin/org/thinkincog/grakmat/JSON.kt
+src/main/kotlin/org/thinkincog/grakmat/Math.kt
+.idea/bashsupport_project.xml
+.idea/dbnavigator.xml
+.idea/kobalt.xml
+.idea/scala_settings.xml

@@ -1,0 +1,408 @@
+<HTML>
+<HEAD>
+<title>org.willthisfly.grakmat - grakmat</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">grakmat</a>&nbsp;/&nbsp;<a href=".">org.willthisfly.grakmat</a><br/>
+<br/>
+<h2>Package org.willthisfly.grakmat</h2>
+<h3>Types</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-and-parser/index.html">AndParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">AndParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">, </span><span class="keyword">out</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">,</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-any-char-parser/index.html">AnyCharParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">AnyCharParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-at-least-parser/index.html">AtLeastParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">AtLeastParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-char-parser/index.html">CharParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">CharParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-empty-parser/index.html">EmptyParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">EmptyParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">?</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-empty-string-parser/index.html">EmptyStringParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">EmptyStringParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-error-position/index.html">ErrorPosition</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">ErrorPosition</span></code>
+<p>Data-class for data about the error position.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-excluded-char-parser/index.html">ExcludedCharParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ExcludedCharParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-included-char-parser/index.html">IncludedCharParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">IncludedCharParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-inline-parser/index.html">InlineParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">InlineParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-mapped-parser/index.html">MappedParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">MappedParser</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="keyword">out</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-named-parser/index.html">NamedParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">NamedParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-or-parser/index.html">OrParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">OrParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-parser/index.html">Parser</a></td>
+<td>
+<code><span class="keyword">interface </span><span class="identifier">Parser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Interface for parsers.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-ranged-parser/index.html">RangedParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RangedParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-referenced-parser/index.html">ReferencedParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">ReferencedParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-repeat-parser/index.html">RepeatParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">RepeatParser</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="-result/index.html">Result</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Result</span><span class="symbol">&lt;</span><span class="keyword">out</span>&nbsp;<span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Data-class for parse result.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-source/index.html">Source</a></td>
+<td>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">Source</span></code>
+<p>Data-class for source.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-string-parser/index.html">StringParser</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">StringParser</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span></code></td>
+</tr>
+</tbody>
+</table>
+<h3>Exceptions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="-parse-exception/index.html">ParseException</a></td>
+<td>
+<code><span class="keyword">open</span> <span class="keyword">class </span><span class="identifier">ParseException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="http://docs.oracle.com/javase/6/docs/api/java/lang/RuntimeException.html"><span class="identifier">RuntimeException</span></a></code>
+<p>Base exception for all parse exceptions.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-unexpected-e-o-f-exception/index.html">UnexpectedEOFException</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">UnexpectedEOFException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parse-exception/index.html"><span class="identifier">ParseException</span></a></code>
+<p>Parse exception for unexpected EOF.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="-unexpected-token-exception/index.html">UnexpectedTokenException</a></td>
+<td>
+<code><span class="keyword">class </span><span class="identifier">UnexpectedTokenException</span>&nbsp;<span class="symbol">:</span>&nbsp;<a href="-parse-exception/index.html"><span class="identifier">ParseException</span></a></code>
+<p>Parse exception for unexpected token.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Extensions for External Classes</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="kotlin.-string/index.html">kotlin.String</a></td>
+<td>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="and.html">and</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">B</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">and</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$and(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.and.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.and.B)))/other">other</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">,</span>&nbsp;<span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Creates parser from two others which tries to parse result this way:</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="any-char-parser.html">anyCharParser</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">anyCharParser</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that consumes any character and returns it.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="at-least.html">atLeast</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">atLeast</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$atLeast(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.atLeast.A)), kotlin.Int)/times">times</span><span class="symbol">:</span>&nbsp;<span class="identifier">Int</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that matches target parser <emph>AT LEAST</emph> <emph>n</emph> times.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="before.html">before</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">B</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">before</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$before(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.before.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.before.B)))/other">other</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Works like <a href="and.html">and</a>, but returns only first result.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="char.html">char</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">char</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$char(kotlin.Char)/expected">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">Char</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that expects, consumes and returns single character.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="chr.html">chr</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">chr</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$chr(kotlin.Char)/expected">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">Char</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="create-parser.html">createParser</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">createParser</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$createParser(kotlin.String, kotlin.Function2((org.willthisfly.grakmat.Source, kotlin.String, org.willthisfly.grakmat.Result((org.willthisfly.grakmat.createParser.A)))))/expectedDescription">expectedDescription</span><span class="symbol">:</span>&nbsp;<span class="identifier">String</span><span class="symbol">, </span><span class="identifier" id="org.willthisfly.grakmat$createParser(kotlin.String, kotlin.Function2((org.willthisfly.grakmat.Source, kotlin.String, org.willthisfly.grakmat.Result((org.willthisfly.grakmat.createParser.A)))))/eatLambda">eatLambda</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><a href="-source/index.html"><span class="identifier">Source</span></a><span class="symbol">,</span>&nbsp;<span class="identifier">String</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="-result/index.html"><span class="identifier">Result</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Function for creating parser using lambda.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="digits-to-integer.html">digitsToInteger</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">digitsToInteger</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$digitsToInteger(kotlin.collections.List((kotlin.Char)))/digits">digits</span><span class="symbol">:</span>&nbsp;<span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Int</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="empty.html">empty</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">empty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">?</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that returns <code>null</code> and consumes nothing from the input.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="empty-string.html">emptyString</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">emptyString</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">String</span></code>
+<p>Returns an empty string.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="empty-string-parser.html">emptyStringParser</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">emptyStringParser</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that returns empty parser and consumes nothing from the input.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="exclude.html">exclude</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">exclude</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="org.willthisfly.grakmat$exclude(kotlin.CharArray)/excluded">excluded</span><span class="symbol">:</span>&nbsp;<span class="identifier">Char</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code>
+<p>Parser that expects any character but not in a range,
+consumes one character, and returns consumed one.</p>
+<code><span class="keyword">fun </span><span class="identifier">exclude</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$exclude(kotlin.collections.Iterable((kotlin.Char)))/excluded">excluded</span><span class="symbol">:</span>&nbsp;<span class="identifier">Iterable</span><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="expression-to-float.html">expressionToFloat</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">expressionToFloat</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$expressionToFloat(kotlin.Pair((kotlin.Pair((kotlin.Float, kotlin.Char)), )))/expr">expr</span><span class="symbol">:</span>&nbsp;<span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">Float</span><span class="symbol">,</span>&nbsp;<span class="identifier">Char</span><span class="symbol">&gt;</span><span class="symbol">,</span>&nbsp;<span class="identifier">Float</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Float</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="in-range.html">inRange</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">inRange</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$inRange(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.inRange.A)), kotlin.ranges.IntRange)/bounds">bounds</span><span class="symbol">:</span>&nbsp;<span class="identifier">IntRange</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that matches target parser from <emph>BOUNDS START</emph> to <emph>BOUNDS END</emph>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="include.html">include</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">include</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier" id="org.willthisfly.grakmat$include(kotlin.CharArray)/included">included</span><span class="symbol">:</span>&nbsp;<span class="identifier">Char</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code>
+<p>Parser that expects any character in a range, consumes one character,
+and returns consumed one.</p>
+<code><span class="keyword">fun </span><span class="identifier">include</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$include(kotlin.collections.Iterable((kotlin.Char)))/included">included</span><span class="symbol">:</span>&nbsp;<span class="identifier">Iterable</span><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">Char</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="main.html">main</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$main(kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<span class="identifier">Array</span><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code><br/>
+<code><span class="keyword">fun </span><span class="identifier">main</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$main(kotlin.Array((kotlin.String)))/args">args</span><span class="symbol">:</span>&nbsp;<span class="identifier">Array</span><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Unit</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="map.html">map</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">B</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">map</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$map(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.map.A)), kotlin.Function1((org.willthisfly.grakmat.map.A, org.willthisfly.grakmat.map.B)))/transform">transform</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="identifier">A</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<span class="identifier">B</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that eats input with the target parser,
+and maps it using transformer function.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="one-or-more.html">oneOrMore</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">oneOrMore</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$oneOrMore(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.oneOrMore.A)))/target">target</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Alias to <code>atLeast(1, xxx)</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="optional.html">optional</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">optional</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$optional(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.optional.A)))/target">target</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">?</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, which will try to consume input with target parser,
+or return <code>null</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="or.html">or</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">or</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$or(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)))/other">other</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates parser from two others which tries to parse result this way:</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="parts-to-float.html">partsToFloat</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">partsToFloat</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$partsToFloat(kotlin.Pair((kotlin.Int, )))/parts">parts</span><span class="symbol">:</span>&nbsp;<span class="identifier">Pair</span><span class="symbol">&lt;</span><span class="identifier">Int</span><span class="symbol">,</span>&nbsp;<span class="identifier">Int</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><span class="identifier">Float</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="ref.html">ref</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">ref</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$ref(kotlin.Function0((org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.ref.A)))))/target">target</span><span class="symbol">:</span>&nbsp;<span class="symbol">(</span><span class="symbol">)</span>&nbsp;<span class="symbol">-&gt;</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-referenced-parser/index.html"><span class="identifier">ReferencedParser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates referenced parser.
+Useful, when you use fields to hold rules:</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="repeat.html">repeat</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">repeat</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$repeat(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.repeat.A)), kotlin.Int)/times">times</span><span class="symbol">:</span>&nbsp;<span class="identifier">Int</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that matches target parser <emph>EXACTLY</emph> <emph>n</emph> times.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="str.html">str</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">str</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$str(kotlin.String)/expected">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">String</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="string.html">string</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="identifier">string</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$string(kotlin.String)/expected">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">String</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">String</span><span class="symbol">&gt;</span></code>
+<p>Creates parser which expects, consumes and returns <a href="string.html#org.willthisfly.grakmat$string(kotlin.String)/expected">expected</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="then.html">then</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">, </span><span class="identifier">B</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">then</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$then(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.then.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.then.B)))/other">other</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">B</span><span class="symbol">&gt;</span></code>
+<p>Works like <a href="and.html">and</a>, but returns only second result.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="with-name.html">withName</a></td>
+<td>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">withName</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$withName(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.withName.A)), kotlin.String)/name">name</span><span class="symbol">:</span>&nbsp;<span class="identifier">String</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that has name, and will use this name
+as description in rethrown parsing errors.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="zero-or-more.html">zeroOrMore</a></td>
+<td>
+<code><span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">zeroOrMore</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$zeroOrMore(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.zeroOrMore.A)))/target">target</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Alias to <code>atLeast(0, xxx)</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

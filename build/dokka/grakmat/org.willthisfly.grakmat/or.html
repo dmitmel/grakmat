@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+<title>or - grakmat</title>
+<link rel="stylesheet" href="../../style.css">
+</HEAD>
+<BODY>
+<a href="../index.html">grakmat</a>&nbsp;/&nbsp;<a href="index.html">org.willthisfly.grakmat</a>&nbsp;/&nbsp;<a href=".">or</a><br/>
+<br/>
+<h1>or</h1>
+<a name="org.willthisfly.grakmat$or(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)))"></a>
+<code><span class="keyword">infix</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">.</span><span class="identifier">or</span><span class="symbol">(</span><span class="identifier" id="org.willthisfly.grakmat$or(org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)), org.willthisfly.grakmat.Parser((org.willthisfly.grakmat.or.A)))/other">other</span><span class="symbol">:</span>&nbsp;<a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="-parser/index.html"><span class="identifier">Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates parser from two others which tries to parse result this way:</p>
+<pre><code>1. Try to use the left parser.
+2. If left parser fails...
+   2.1. Try to use the right parser.
+   2.2. If right parser fails...
+        2.2.1. Throw an exception.
+   2.3. Otherwise...
+        2.3.1. Return result of right parser.
+3. Otherwise...
+    3.1. Return result of left parser.</code></pre>
+<h3>Parameters</h3>
+
+<p><a name="other"></a>
+<code>other</code> - Right parser.
+<p><strong>Receiver</strong><br/>
+Left parser.</p>
+</BODY>
+</HTML>

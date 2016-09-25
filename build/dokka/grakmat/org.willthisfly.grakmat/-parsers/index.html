@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+<title>Parsers - grakmat</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">grakmat</a>&nbsp;/&nbsp;<a href="../index.html">org.willthisfly.grakmat</a>&nbsp;/&nbsp;<a href=".">Parsers</a><br/>
+<br/>
+<h1>Parsers</h1>
+<code><span class="keyword">class </span><span class="identifier">Parsers</span></code>
+<h3>Functions</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<a href="any-char-parser.html">anyCharParser</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">anyCharParser</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, that consumes any character and returns it.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="char.html">char</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">char</span><span class="symbol">(</span><span class="identifier">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">char</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that expects, consumes and returns single character.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="chr.html">chr</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">chr</span><span class="symbol">(</span><span class="identifier">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">char</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="create-parser.html">createParser</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">createParser</span><span class="symbol">(</span><span class="identifier">expectedDescription</span><span class="symbol">:</span>&nbsp;<span class="identifier">java.lang.String</span><span class="symbol">, </span><span class="identifier">eatLambda</span><span class="symbol">:</span>&nbsp;<span class="identifier">kotlin.jvm.functions.Function2</span><span class="symbol">&lt;</span><span class="identifier">? super org.willthisfly.grakmat.Source</span><span class="symbol">,</span>&nbsp;<span class="identifier">? super java.lang.String</span><span class="symbol">,</span>&nbsp;<span class="identifier">? extends org.willthisfly.grakmat.Result&lt;?extendsA&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Function for creating parser using lambda.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="empty.html">empty</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">empty</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that returns <code>null</code> and consumes nothing from the input.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="empty-string-parser.html">emptyStringParser</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">emptyStringParser</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.String</span><span class="symbol">&gt;</span></code>
+<p>Creates parser that returns empty parser and consumes nothing from the input.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="exclude.html">exclude</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">exclude</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier">excluded</span><span class="symbol">:</span>&nbsp;<span class="identifier">char</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code>
+<p>Parser that expects any character but not in a range,
+consumes one character, and returns consumed one.</p>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">exclude</span><span class="symbol">(</span><span class="identifier">excluded</span><span class="symbol">:</span>&nbsp;<span class="identifier">java.lang.Iterable</span><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="include.html">include</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">include</span><span class="symbol">(</span><span class="keyword">vararg</span> <span class="identifier">included</span><span class="symbol">:</span>&nbsp;<span class="identifier">char</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code>
+<p>Parser that expects any character in a range, consumes one character,
+and returns consumed one.</p>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">include</span><span class="symbol">(</span><span class="identifier">included</span><span class="symbol">:</span>&nbsp;<span class="identifier">java.lang.Iterable</span><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.Character</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="one-or-more.html">oneOrMore</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">oneOrMore</span><span class="symbol">(</span><span class="identifier">target</span><span class="symbol">:</span>&nbsp;<a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">? extends A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.util.List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Alias to <code>atLeast(1, xxx)</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="optional.html">optional</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">optional</span><span class="symbol">(</span><span class="identifier">target</span><span class="symbol">:</span>&nbsp;<a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">? extends A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates parser, which will try to consume input with target parser,
+or return <code>null</code>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="ref.html">ref</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">ref</span><span class="symbol">(</span><span class="identifier">target</span><span class="symbol">:</span>&nbsp;<span class="identifier">kotlin.jvm.functions.Function0</span><span class="symbol">&lt;</span><span class="identifier">? extends org.willthisfly.grakmat.Parser&lt;?extendsA&gt;</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-referenced-parser/index.html"><span class="identifier">org.willthisfly.grakmat.ReferencedParser</span></a><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span></code>
+<p>Creates referenced parser.
+Useful, when you use fields to hold rules:</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="str.html">str</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">str</span><span class="symbol">(</span><span class="identifier">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">java.lang.String</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.String</span><span class="symbol">&gt;</span></code></td>
+</tr>
+<tr>
+<td>
+<a href="string.html">string</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="identifier">string</span><span class="symbol">(</span><span class="identifier">expected</span><span class="symbol">:</span>&nbsp;<span class="identifier">java.lang.String</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.lang.String</span><span class="symbol">&gt;</span></code>
+<p>Creates parser which expects, consumes and returns <a href="#">expected</a>.</p>
+</td>
+</tr>
+<tr>
+<td>
+<a href="zero-or-more.html">zeroOrMore</a></td>
+<td>
+<code><span class="keyword">static</span> <span class="keyword">fun </span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span> <span class="identifier">zeroOrMore</span><span class="symbol">(</span><span class="identifier">target</span><span class="symbol">:</span>&nbsp;<a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">? extends A</span><span class="symbol">&gt;</span><span class="symbol">)</span><span class="symbol">: </span><a href="../-parser/index.html"><span class="identifier">org.willthisfly.grakmat.Parser</span></a><span class="symbol">&lt;</span><span class="identifier">java.util.List</span><span class="symbol">&lt;</span><span class="identifier">A</span><span class="symbol">&gt;</span><span class="symbol">&gt;</span></code>
+<p>Alias to <code>atLeast(0, xxx)</code>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>
