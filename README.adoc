@@ -1,0 +1,12 @@
+= grakmat
+:json-example-link: https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org/drimachine/grakmat/JSON.kt
+:toc: left
+:icons: font
+
+Grakmat is a https://kotlinlang.org[Kotlin] library for creating language grammars.
+It can parse any https://wikipedia.org/wiki/EBNF[EBNF] grammars and contains line/column error reporting.
+A {json-example-link}[JSON example] is included.
+
+== Usage
+
+=== Step 0: Getting

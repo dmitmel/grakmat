@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thinkincog.grakmat
+package org.drimachine.grakmat
 
 /**
  * Base exception for all parse exceptions.
@@ -23,8 +23,8 @@ package org.thinkincog.grakmat
  * @param errorPosition Line with error.
  */
 open class ParseException(val errorDescription: String, val errorPosition: ErrorPosition) : RuntimeException() {
-    var tag: Tag = Tag.NONE
-    fun withTag(tag: Tag): ParseException = this.apply { this.tag = tag }
+    var isFromNamedParser = false
+    fun isFromNamedParser(isFromNamedParser: Boolean): ParseException = apply { this.isFromNamedParser = isFromNamedParser }
 
     /** @see [ErrorPosition.lineNumber]. */
     val lineNumber: Int
@@ -53,10 +53,6 @@ open class ParseException(val errorDescription: String, val errorPosition: Error
      */
     override val message: String
         get() = "$errorDescription\n$errorPosition"
-
-    enum class Tag {
-        NONE, NAMED
-    }
 }
 
 /**
@@ -65,12 +61,14 @@ open class ParseException(val errorDescription: String, val errorPosition: Error
  * @param expected Expected token.
  */
 class UnexpectedEOFException(val expected: String, errorPosition: ErrorPosition)
-: ParseException("Expected $expected, but got <EOF>", ErrorPosition(errorPosition.lineNumber, errorPosition.lineSource.length + 1, errorPosition.lineSource))
+: ParseException("Expected $expected, but got <EOF>", ErrorPosition(errorPosition.lineNumber,
+        errorPosition.lineSource.length + 1,    // Making column number of error position point after the end of source
+        errorPosition.lineSource))
 
 /**
  * Parse exception for unexpected token.
  *
  * @param expected Expected token.
  */
-class UnexpectedTokenException(val expected: String, errorPosition: ErrorPosition)
-: ParseException("Expected $expected", errorPosition)
+class UnexpectedTokenException(val expected: String, val got: String?, errorPosition: ErrorPosition)
+: ParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition)

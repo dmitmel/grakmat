@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 ThinkInCog.org
+ * Copyright (c) 2016 Drimachine.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,16 @@
 
 @file:JvmName("Combinators")
 
-package org.thinkincog.grakmat
+package org.drimachine.grakmat
 
 import java.util.*
 
 /**
- * Creates parser from two others which tries to parse result this way:
- *
- * ```
- * 1. Try to use the left parser.
- * 2. If left parser fails...
- *    2.1. Try to use the right parser.
- *    2.2. If right parser fails...
- *         2.2.1. Throw an exception.
- *    2.3. Otherwise...
- *         2.3.1. Return result of right parser.
- * 3. Otherwise...
- *     3.1. Return result of left parser.
- * ```
+ * Creates parser from two others that tries to parse `a` if possible, otherwise parse `b`.
  *
  * @receiver Left parser.
  * @param other Right parser.
+ * @return The result of the successful parse.
  */
 infix fun <A> Parser<A>.or(other: Parser<A>): Parser<A> = OrParser(this, other)
 
@@ -54,36 +43,38 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
             try {
                 return rightParser.eat(source, input)
             } catch (rightEx: UnexpectedEOFException) {
-                val mixedExpected: String        = getExpectedFrom(leftEx, rightEx)
-                val errorPosition: ErrorPosition = getErrorPositionFrom(leftEx, rightEx)
-                val tag: ParseException.Tag = getTagFrom(leftEx, rightEx)
+                val mixedExpected: String        = getPropertyFrom(leftEx, rightEx)
+                val errorPosition: ErrorPosition = leftEx.errorPosition
+                val isFromNamedParser: Boolean   = isFromNamedParser(leftEx, rightEx)
+                val got: String? = getGotFrom(leftEx)
 
                 if (leftEx is UnexpectedEOFException)
-                    throw UnexpectedEOFException(mixedExpected, errorPosition).withTag(tag)
+                    throw UnexpectedEOFException(mixedExpected, errorPosition).isFromNamedParser(isFromNamedParser)
                 else
-                    throw UnexpectedTokenException(mixedExpected, errorPosition).withTag(tag)
+                    throw UnexpectedTokenException(mixedExpected, got, errorPosition).isFromNamedParser(isFromNamedParser)
             } catch (rightEx: UnexpectedTokenException) {
-                val mixedExpected: String   = getExpectedFrom(leftEx, rightEx)
-                val errorPosition: ErrorPosition = getErrorPositionFrom(leftEx, rightEx)
-                val tag: ParseException.Tag = getTagFrom(leftEx, rightEx)
+                val mixedExpected: String        = getPropertyFrom(leftEx, rightEx)
+                val errorPosition: ErrorPosition = leftEx.errorPosition
+                val isFromNamedParser: Boolean   = isFromNamedParser(leftEx, rightEx)
+                val got: String? = getGotFrom(leftEx)
 
-                throw UnexpectedTokenException(mixedExpected, errorPosition).withTag(tag)
+                throw UnexpectedTokenException(mixedExpected, got, errorPosition).isFromNamedParser(isFromNamedParser)
             }
         }
     }
 
-    private fun getTagFrom(leftEx: ParseException, rightEx: ParseException): ParseException.Tag {
-        val anyIsNamed = (leftEx.tag == ParseException.Tag.NAMED && rightEx.tag == ParseException.Tag.NAMED)
-        return if (anyIsNamed) ParseException.Tag.NAMED else ParseException.Tag.NONE
+    private fun isFromNamedParser(leftEx: ParseException, rightEx: ParseException): Boolean =
+            leftEx.isFromNamedParser || rightEx.isFromNamedParser
+
+    private fun getGotFrom(parseEx: ParseException): String? = when (parseEx) {
+        is UnexpectedEOFException   -> "<EOF>"
+        is UnexpectedTokenException -> parseEx.got
+        else                        -> getPropertyFrom(parseEx, "got")?.toString()
     }
 
-    private fun getErrorPositionFrom(leftEx: ParseException, rightEx: ParseException): ErrorPosition {
-        return leftEx.errorPosition
-    }
-
-    private fun getExpectedFrom(leftEx: ParseException, rightEx: ParseException): String {
-        var leftExpected  = getExpectedFrom(leftEx)
-        var rightExpected = getExpectedFrom(rightEx)
+    private fun getPropertyFrom(leftEx: ParseException, rightEx: ParseException): String {
+        var leftExpected: String? = getPropertyFrom(leftEx, "expected")?.toString()
+        var rightExpected: String? = getPropertyFrom(rightEx, "expected")?.toString()
 
         if (leftExpected == null)
             leftExpected = leftParser.expectedDescription
@@ -93,16 +84,16 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
         return if (leftExpected == rightExpected) leftExpected else "$leftExpected or $rightExpected"
     }
 
-    private fun getExpectedFrom(parseException: ParseException): String? {
-        val clazz = parseException.javaClass
+    private fun getPropertyFrom(obj: Any, propertyName: String): Any? {
+        val clazz = obj.javaClass
 
         try {
-            val field = clazz.getField("expected")
-            return field.get(parseException).toString()
+            val field = clazz.getField(propertyName)
+            return field.get(obj)
         } catch (e: ReflectiveOperationException) {
             try {
-                val method = clazz.getMethod("getExpected")
-                return method.invoke(parseException).toString()
+                val method = clazz.getMethod("get" + propertyName.capitalize())
+                return method.invoke(obj)
             } catch (e: ReflectiveOperationException) {
                 return null
             }
@@ -114,22 +105,11 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
 
 
 /**
- * Creates parser from two others which tries to parse result this way:
- *
- * ```
- * 1. Try to use the left parser.
- * 2. If left parser fails...
- *    2.1. Throw an exception.
- * 3. Otherwise...
- *    3.1. Try to use the right parser on remainder of left one.
- *    3.2. If right parser fails...
- *         3.2.1. Throw an exception.
- *    3.3. Otherwise...
- *         3.3.1 Return both results.
- * ```
+ * Creates parser from two others that parses `a` and then `b`.
  *
  * @receiver Left parser.
  * @param other Right parser.
+ * @return `Pair<A,B>` of both results.
  */
 infix fun <A, B> Parser<A>.and(other: Parser<B>): Parser<Pair<A, B>> = AndParser(this, other)
 
@@ -206,15 +186,15 @@ class NamedParser<out A>(val target: Parser<A>, val name: String) : Parser<A> {
             try {
                 target.eat(source, input)
             } catch (e: UnexpectedEOFException) {
-                if (e.tag == ParseException.Tag.NAMED)
+                if (e.isFromNamedParser)
                     throw e
                 else
-                    throw UnexpectedEOFException(this.name, e.errorPosition).withTag(ParseException.Tag.NAMED)
+                    throw UnexpectedEOFException(this.name, e.errorPosition).isFromNamedParser(true)
             } catch (e: UnexpectedTokenException) {
-                if (e.tag == ParseException.Tag.NAMED)
+                if (e.isFromNamedParser)
                     throw e
                 else
-                    throw UnexpectedTokenException(this.name, e.errorPosition).withTag(ParseException.Tag.NAMED)
+                    throw UnexpectedTokenException(this.name, e.got, e.errorPosition).isFromNamedParser(true)
             }
 
     override fun toString(): String = expectedDescription
@@ -313,4 +293,6 @@ class RangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : Parser<
 
         return Result(Collections.unmodifiableList(list), remainder)
     }
+
+    override fun toString(): String = expectedDescription
 }

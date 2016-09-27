@@ -1,10 +1,17 @@
+## Gradle
 .gradle/
+build/
+
+## IDEA'S config files
+# workspace.xml often changes
 .idea/workspace.xml
-build/kotlin*
-build/tmp
-src/main/kotlin/org/thinkincog/grakmat/JSON.kt
-src/main/kotlin/org/thinkincog/grakmat/Math.kt
-.idea/bashsupport_project.xml
+# Configs for plugins
 .idea/dbnavigator.xml
-.idea/kobalt.xml
-.idea/scala_settings.xml
+
+## Asciidoc
+# Utility for coverting my Asciidoc files to HTML
+build-asciidoc.rb
+prism.*
+asciidoc-theme-extensions.css
+# README that will come soon
+README.adoc

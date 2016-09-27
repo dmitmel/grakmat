@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 ThinkInCog.org
+ * Copyright (c) 2016 Drimachine.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.thinkincog.grakmat
+package org.drimachine.grakmat
 
 import org.junit.*
 import org.junit.Assert.*

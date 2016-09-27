@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 ThinkInCog.org
+ * Copyright (c) 2016 Drimachine.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 @file:JvmName("Parsers")
 
-package org.thinkincog.grakmat
+package org.drimachine.grakmat
 
 
 /**
@@ -68,7 +68,7 @@ interface Parser<out A> {
             return value
         } else {
             val errorIndex = input.length - remainder.length
-            throw UnexpectedTokenException("<EOF>", input.errorPosition(errorIndex))
+            throw UnexpectedTokenException("<EOF>", remainder.boundLengthTo(20), input.errorPosition(errorIndex))
         }
     }
 
@@ -131,7 +131,7 @@ class EmptyStringParser : Parser<String> {
         get() = "empty string"
 
     override fun eat(source: Source, input: String): Result<String> {
-        return Result(emptyString(), input)
+        return Result("", input)
     }
 
     override fun toString(): String = expectedDescription
@@ -161,14 +161,14 @@ class StringParser(val expected: String) : Parser<String> {
     override fun eat(source: Source, input: String): Result<String> {
         if (expected.length > input.length) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
         }
 
         // Now, length of the input will be equal or greater than length of the expected sequence,
         // so I use indexes of expected to check tokens
-        if (input.regionMatches(0, expected, 0, expected.length)) {
+        if (!input.regionMatches(0, expected, 0, expected.length)) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
         }
 
         val remainder = input.substring(expected.length, input.length)
@@ -229,12 +229,12 @@ class CharParser(val expected: Char) : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
         }
 
         if (input[0] != expected) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
         }
 
         val remainder = input.substring(1)
@@ -251,30 +251,30 @@ class CharParser(val expected: Char) : Parser<Char> {
  *
  * @param included Characters that can be consumed.
  */
-fun include(vararg included: Char): Parser<Char> = IncludedCharParser(included.toList())
+fun anyOf(vararg included: Char): Parser<Char> = IncludedCharParser(included.toList())
 
 /**
- * @see include
+ * @see anyOf
  */
-fun include(included: Iterable<Char>): Parser<Char> = IncludedCharParser(included.toList())
+fun anyOf(included: Iterable<Char>): Parser<Char> = IncludedCharParser(included.toList())
 
 /**
- * @see include
+ * @see anyOf
  */
 class IncludedCharParser(val included: Iterable<Char>) : Parser<Char> {
     override val expectedDescription: String
-        get() = "[${included.joinToString(emptyString())}]"
+        get() = "[${included.joinToString("")}]"
 
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
         }
 
         val value = input[0]
         if (value !in included) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
         }
         
         val remainder = input.substring(1)
@@ -291,15 +291,15 @@ class IncludedCharParser(val included: Iterable<Char>) : Parser<Char> {
  *
  * @param excluded Characters that can't be consumed.
  */
-fun exclude(vararg excluded: Char): Parser<Char> = ExcludedCharParser(excluded.toList())
+fun except(vararg excluded: Char): Parser<Char> = ExcludedCharParser(excluded.toList())
 
 /**
- * @see exclude
+ * @see except
  */
-fun exclude(excluded: Iterable<Char>): Parser<Char> = ExcludedCharParser(excluded.toList())
+fun except(excluded: Iterable<Char>): Parser<Char> = ExcludedCharParser(excluded.toList())
 
 /**
- * @see exclude
+ * @see except
  */
 class ExcludedCharParser(val excluded: Iterable<Char>) : Parser<Char> {
     override val expectedDescription: String
@@ -308,13 +308,13 @@ class ExcludedCharParser(val excluded: Iterable<Char>) : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
         }
 
         val value = input[0]
         if (value in excluded) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
         }
         
         val remainder = input.substring(1)
@@ -340,7 +340,7 @@ class AnyCharParser : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
         }
 
         val value = input[0]

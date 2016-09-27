@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 ThinkInCog.org
+ * Copyright (c) 2016 Drimachine.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,22 @@
 
 @file:JvmName("Strings")
 
-package org.thinkincog.grakmat
-
-/**
- * Returns an empty string.
- */
-fun emptyString(): String = ""
+package org.drimachine.grakmat
 
 
-/**
+@JvmOverloads
+fun String.boundLengthTo(maxLength: Int, ellipsis: String = "..."): String =
+        if (this.isEmpty())
+            throw IllegalArgumentException("String is empty")
+        else if (maxLength < 1)
+            throw IllegalArgumentException("Max length is smaller than 1")
+        else if (this.length > maxLength)
+            this.substring(0, maxLength) + ellipsis
+        else
+            this
+
+
+        /**
  * Data-class for data about the error position.
  *
  * @param lineNumber Line number.
@@ -83,7 +90,7 @@ fun String.errorPosition(index: Int): ErrorPosition {
     }
 
     val lastLineNumber   = lines.size
-    val lastLineSource   = if (lines.isEmpty()) emptyString() else lines.last()
+    val lastLineSource   = if (lines.isEmpty()) "" else lines.last()
     val lastColumnNumber = lastLineSource.length + 1
     return ErrorPosition(lastLineNumber, lastColumnNumber, lastLineSource)
 }
