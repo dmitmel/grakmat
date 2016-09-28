@@ -121,21 +121,7 @@ class EmptyParser<out A> : Parser<A?> {
 /**
  * Creates parser that returns empty parser and consumes nothing from the input.
  */
-fun emptyStringParser(): Parser<String> = EmptyStringParser()
-
-/**
- * @see emptyString
- */
-class EmptyStringParser : Parser<String> {
-    override val expectedDescription: String
-        get() = "empty string"
-
-    override fun eat(source: Source, input: String): Result<String> {
-        return Result("", input)
-    }
-
-    override fun toString(): String = expectedDescription
-}
+fun emptyString(): Parser<String> = empty<String>() map { "" }
 
 /** @see string */
 fun str(expected: String): Parser<String> = string(expected)
@@ -146,8 +132,8 @@ fun str(expected: String): Parser<String> = string(expected)
  * @param expected Expected string.
  */
 fun string(expected: String): Parser<String> = when (expected.length) {
-    0    -> EmptyStringParser()
-    1    -> CharParser(expected[0]) map { String(charArrayOf(it)) }
+    0    -> emptyString()
+    1    -> char(expected[0]) map { String(charArrayOf(it)) }
     else -> StringParser(expected)
 }
 
@@ -328,7 +314,7 @@ class ExcludedCharParser(val excluded: Iterable<Char>) : Parser<Char> {
 /**
  * Creates parser, that consumes any character and returns it.
  */
-fun anyCharParser(): Parser<Char> = AnyCharParser()
+fun anyChar(): Parser<Char> = AnyCharParser()
 
 /**
  * @see AnyCharParser

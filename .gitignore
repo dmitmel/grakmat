@@ -13,5 +13,3 @@ build/
 build-asciidoc.rb
 prism.*
 asciidoc-theme-extensions.css
-# README that will come soon
-README.adoc

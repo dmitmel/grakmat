@@ -109,7 +109,7 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
  *
  * @receiver Left parser.
  * @param other Right parser.
- * @return `Pair<A,B>` of both results.
+ * @return `Pair<A, B>` of both results.
  */
 infix fun <A, B> Parser<A>.and(other: Parser<B>): Parser<Pair<A, B>> = AndParser(this, other)
 
