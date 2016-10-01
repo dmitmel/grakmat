@@ -52,7 +52,7 @@ dependencies {
 ///////////////////////// END OF DEPENDENCIES /////////////////////////
 
 ///////////////////////// ARTIFACTS AND JARS /////////////////////////
-task sourcesJar(type: Jar, group: 'build', description: 'Assembles a jar archive containing all sources.') {
+task sourcesZip(type: Zip, group: 'build', description: 'Assembles a zip archive containing all sources.') {
     classifier = 'sources'
     from sourceSets['main'].allSource
 }
@@ -75,7 +75,7 @@ tasks.withType(Jar) {
 
 artifacts {
     archives jar
-    archives sourcesJar
+    archives sourcesZip
     archives docsZip
 }
 ///////////////////////// END OF ARTIFACTS AND JARS /////////////////////////
@@ -86,7 +86,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             
-            artifact sourcesJar {
+            artifact sourcesZip {
                 classifier = "sources"
             }
             
