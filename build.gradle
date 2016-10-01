@@ -28,7 +28,7 @@ apply plugin: 'maven-publish'
 ///////////////////////// END OF PLUGINS /////////////////////////
 
 group = 'org.drimachine.grakmat'
-version = '1.0'
+version = '1.1'
 
 dokka {
     sourceDirs = files("$projectDir/src/main/kotlin")
@@ -57,6 +57,12 @@ task sourcesJar(type: Jar, group: 'build', description: 'Assembles a jar archive
     from sourceSets['main'].allSource
 }
 
+task docsZip(type: Zip, group: 'documentation', description: 'Assemble a zip archive containing documentation.',
+             dependsOn: dokka) {
+    classifier = 'docs'
+    from dokka.outputDirectory
+}
+
 shadowJar {
     classifier = 'fatjar'
 }
@@ -70,6 +76,7 @@ tasks.withType(Jar) {
 artifacts {
     archives jar
     archives sourcesJar
+    archives docsZip
 }
 ///////////////////////// END OF ARTIFACTS AND JARS /////////////////////////
 
@@ -80,7 +87,11 @@ publishing {
             from components.java
             
             artifact sourcesJar {
-                classifier "sources"
+                classifier = "sources"
+            }
+            
+            artifact docsZip {
+                classifier = "docs"
             }
         }
     }
