@@ -22,7 +22,7 @@ package org.drimachine.grakmat
  * @param errorDescription Error description.
  * @param errorPosition Line with error.
  */
-open class ParseException(val errorDescription: String, val errorPosition: ErrorPosition) : RuntimeException() {
+open class ParseException(val errorDescription: String, val errorPosition: ErrorPosition, val source: Source) : RuntimeException() {
     var isFromNamedParser = false
     fun isFromNamedParser(isFromNamedParser: Boolean): ParseException = apply { this.isFromNamedParser = isFromNamedParser }
 
@@ -52,7 +52,7 @@ open class ParseException(val errorDescription: String, val errorPosition: Error
      * Where `^` is pointer to the column with error.
      */
     override val message: String
-        get() = "$errorDescription\n$errorPosition"
+        get() = "${source.fileName}:$lineNumber: $errorDescription\n$errorPosition"
 }
 
 /**
@@ -60,15 +60,18 @@ open class ParseException(val errorDescription: String, val errorPosition: Error
  *
  * @param expected Expected token.
  */
-class UnexpectedEOFException(val expected: String, errorPosition: ErrorPosition)
-: ParseException("Expected $expected, but got <EOF>", ErrorPosition(errorPosition.lineNumber,
-        errorPosition.lineSource.length + 1,    // Making column number of error position point after the end of source
-        errorPosition.lineSource))
+class UnexpectedEOFException(val expected: String, errorPosition: ErrorPosition, source: Source)
+: ParseException(
+        "Expected $expected, but got <EOF>",
+        ErrorPosition(errorPosition.lineNumber,
+                errorPosition.lineSource.length + 1,    // Making column number of error position point after the end of source
+                errorPosition.lineSource),
+        source)
 
 /**
  * Parse exception for unexpected token.
  *
  * @param expected Expected token.
  */
-class UnexpectedTokenException(val expected: String, val got: String?, errorPosition: ErrorPosition)
-: ParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition)
+class UnexpectedTokenException(val got: String?, val expected: String, errorPosition: ErrorPosition, source: Source)
+: ParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition, source)

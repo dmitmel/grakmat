@@ -18,6 +18,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
 apply plugin: 'kotlin'
 apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'maven-publish'
@@ -43,7 +47,7 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compile "junit:junit:$junitVersion"
+    testCompile "junit:junit:$junitVersion"
 }
 ///////////////////////// END OF DEPENDENCIES /////////////////////////
 
@@ -53,10 +57,14 @@ task sourcesJar(type: Jar, group: 'build', description: 'Assembles a jar archive
     from sourceSets['main'].allSource
 }
 
+shadowJar {
+    classifier = 'fatjar'
+}
+
 tasks.withType(Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // Adding license file
-    from file("$projectDir/LICENSE")
+    // Adding license file, and README's
+    from files("$projectDir/LICENSE", "$projectDir/README.adoc", "$projectDir/README.html")
 }
 
 artifacts {

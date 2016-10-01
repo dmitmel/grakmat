@@ -14,103 +14,144 @@
  * limitations under the License.
  */
 
-@file:JvmName("JSON")
-
 package org.drimachine.grakmat
 
+import java.io.File
 import kotlin.system.exitProcess
 
-/**
- * Adds `this` value to the head of list.
- *
- * @receiver Head of the result.
- * @param list Tail of the result
- */
-private operator fun <T> T.plus(list: List<T>): List<T> {
-    val result = arrayListOf<T>()
-    result += this
-    result += list
-    return result.toList()
-}
 
-// Forward references
-private val jsonRef:  Parser<Map<String, Any?>> = ref { json }
-private val valueRef: Parser<Any?>              = ref { value }
-
-private val leftSquareBracket:  Parser<Char> = char('[') withName "\'[\'"
-private val rightSquareBracket: Parser<Char> = char(']') withName "\']\'"
-// values: value (',' value)*
-private val values: Parser<List<Any?>> = valueRef and zeroOrMore(char(',') then valueRef) map { it: Pair<Any?, List<Any?>> -> it.first + it.second }
-// array: '[' values ']'
-private val array: Parser<List<Any?>> = leftSquareBracket then values before rightSquareBracket
-
-// Digit: [0-9]
-private val digit: Parser<Char> = anyOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
-// integer: digit | digit digit | digit digit digit | ... | digit digit digit digit digit digit digit digit digit
-private val integer: Parser<Int> = digit inRange 1..9 map ::digitsToInteger
-// float: integer '.' (digit)+
-private val float: Parser<Float> = integer before char('.') and oneOrMore(digit) map ::partsToFloat
-// number: float | integer
-@Suppress("UNCHECKED_CAST")
-private val number:  Parser<Number> = ((float or integer) as Parser<Number>) withName "number"
-
-private fun digitsToInteger(digits: List<Char>): Int = digits.joinToString("").toInt()
-
-private fun partsToFloat(parts: Pair<Int, List<Char>>): Float {
-    val (naturalPart, fracDigits) = parts
-    val frac = fracDigits.joinToString("")
-    return "$naturalPart.$frac".toFloat()
-}
-
-// EscapedCharacter: '\\' ('"' | '\\' | 'b' | 'f' | 'n' | 'r' | 't' | 'v')
-private val escapedCharacter: Parser<Char> = char('\\') then anyOf('\"', '\\', 'b', 'f', 'n', 'r', 't', 'v') map {
-    when (it) {
-        '\"' -> '\"'
-        '\\' -> '\\'
-        'b'  -> '\b'
-        'f'  -> 0x0C.toChar()
-        'n'  -> '\n'
-        'r'  -> '\r'
-        't'  -> '\t'
-        'v'  -> 0x0B.toChar()
-        else -> error("unreachable code")
+object JSON {
+    /**
+     * Adds `this` value to the head of list.
+     *
+     * @receiver Head of the result.
+     * @param list Tail of the result
+     */
+    private operator fun <T> T.plus(list: List<T>): List<T> {
+        val result = arrayListOf<T>()
+        result += this
+        result += list
+        return result.toList()
     }
+
+    // Forward references
+    private val jsonObjectRef: Parser<Map<String, Any?>> = ref { jsonObject }
+    private val valueRef:      Parser<Any?>              = ref { value }
+
+    private val leftSquareBracket:  Parser<Char> = chr('[') withName "\'[\'"
+    private val rightSquareBracket: Parser<Char> = chr(']') withName "\']\'"
+    // values: value (',' value)*
+    private val values: Parser<List<Any?>> = (valueRef _and_ _zeroOrMore_(chr(',') _then_ valueRef))
+            .map { it: Pair<Any?, List<Any?>> -> it.first + it.second }
+    // array: '[' values ']'
+    private val array: Parser<List<Any?>> = (leftSquareBracket _then_ values _before_ rightSquareBracket)
+            .withName("array")
+
+    // Digit: [0-9]
+    private val digit: Parser<Char> = anyOf('0'..'9')
+    // integer: digit | digit digit | digit digit digit | ... | digit digit digit digit digit digit digit digit digit
+    private val integer: Parser<Int> = digit inRange 1..9 map { digits: List<Char> -> digitsToInteger(digits) }
+    // float: integer '.' (digit)+
+    private val float: Parser<Float> = integer before chr('.') and oneOrMore(digit) map { parts: Pair<Int, List<Char>> -> partsToFloat(parts) }
+    // number: float | integer
+    @Suppress("UNCHECKED_CAST")
+    private val number:  Parser<Number> = ((float or integer) as Parser<Number>)
+            .withName("number")
+
+    private fun digitsToInteger(digits: List<Char>): Int = digits.joinToString("").toInt()
+
+    private fun partsToFloat(parts: Pair<Int, List<Char>>): Float {
+        val (naturalPart, fracDigits) = parts
+        val frac = fracDigits.joinToString("")
+        return "$naturalPart.$frac".toFloat()
+    }
+
+    // EscapedCharacter: '\\' ('"' | '\\' | 'b' | 'f' | 'n' | 'r' | 't' | 'v')
+    private val escapedCharacter: Parser<Char> = chr('\\') then anyOf('\"', '\\', 'b', 'f', 'n', 'r', 't', 'v') map {
+        when (it) {
+            '\"' -> '\"'
+            '\\' -> '\\'
+            'b'  -> '\b'
+            'f'  -> 0x0C.toChar()
+            'n'  -> '\n'
+            'r'  -> '\r'
+            't'  -> '\t'
+            'v'  -> 0x0B.toChar()
+            else -> error("unreachable code")
+        }
+    }
+    // Character: ~('"' | '\\') | EscapedCharacter
+    private val character: Parser<Char> = except('\"', '\\') or escapedCharacter withName "character"
+    private val quote:     Parser<Char> = chr('\"') withName "\'\"\'"
+    // stringLiteral: '"' (Character)+ '"'
+    private val stringLiteral: Parser<String> = (quote then zeroOrMore(character) before quote)
+            .map { it.joinToString("") }
+            .withName("string literal")
+
+    private val colon:      Parser<Char>    = chr(':') withName "\':\'"
+    private val trueValue:  Parser<Boolean> = str("true")  map { true }
+    private val falseValue: Parser<Boolean> = str("false") map { false }
+    private val nullValue:  Parser<Any?>    = str("null")  map { null }
+    // value: stringLiteral | number | json | array | 'true' | 'false' | 'null'
+    private val value: Parser<Any?> = (stringLiteral or number or jsonObjectRef or array or trueValue or falseValue or nullValue)
+            .withName("value")
+    // pair: stringLiteral ':' value
+    private val pair: Parser<Pair<String, Any?>> = (stringLiteral _before_ colon _and_ value)
+            .withName("pair")
+
+    private val leftBrace:  Parser<Char> = chr('{') withName "\'{\'"
+    private val rightBrace: Parser<Char> = chr('}') withName "\'}\'"
+    // pairs: pair (',' pair)*
+    private val pairs: Parser<List<Pair<String, Any?>>> = (pair _and_ _zeroOrMore_(chr(',') _then_ pair))
+            .map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> it.first + it.second }
+    // jsonObject: '{' pairs '}' | '{' '}'
+    private val jsonObject: Parser<Map<String, Any?>> =
+            (optionalSpaces then (
+                    (leftBrace _then_ pairs _before_ rightBrace map { it: List<Pair<String, Any?>> -> it.toMap() })
+                            or
+                            (leftBrace _and_ rightBrace map { emptyMap<String, Any?>() })
+                    ) before optionalSpaces)
+                    .withName("object")
+
+    @JvmStatic fun parse(json: String): Map<String, Any?> = jsonObject.parse(json)
+    @JvmStatic fun parseFile(file: File): Map<String, Any?> = jsonObject.parseFile(file)
 }
-// Character: ~('"' | '\\') | EscapedCharacter
-private val character: Parser<Char> = except('\"', '\\') or escapedCharacter withName "character"
-private val quote:     Parser<Char> = char('\"') withName "\'\"\'"
-// stringLiteral: '"' (Character)+ '"'
-private val stringLiteral: Parser<String> = quote then zeroOrMore(character) before quote map { it.joinToString("") } withName "string literal"
 
-private val colon:      Parser<Char>    = char(':') withName "\':\'"
-private val trueValue:  Parser<Boolean> = str("true")  map { true }
-private val falseValue: Parser<Boolean> = str("false") map { false }
-private val nullValue:  Parser<Any?>    = str("null")  map { null }
-// value: stringLiteral | number | json | array | 'true' | 'false' | 'null'
-private val value: Parser<Any?> = stringLiteral or number or jsonRef or array or trueValue or falseValue or nullValue withName "value"
-// pair: stringLiteral ':' value
-private val pair: Parser<Pair<String, Any?>> = stringLiteral before colon and value withName "pair"
 
-private val leftBrace:  Parser<Char> = char('{') withName "\'{\'"
-private val rightBrace: Parser<Char> = char('}') withName "\'}\'"
-// emptyObject: '{' '}'
-private val emptyObject: Parser<Map<String, Any?>> = leftBrace and rightBrace map { emptyMap<String, Any>() } withName "empty object"
-// pairs: pair (',' pair)*
-private val pairs: Parser<List<Pair<String, Any?>>> = pair and zeroOrMore(char(',') then pair) map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> it.first + it.second }
-// jsonObject: '{' pairs '}'
-private val jsonObject: Parser<Map<String, Any?>> = leftBrace then pairs before rightBrace map { it.toMap() } withName "object"
-// json: jsonObject | emptyObject
-private val json: Parser<Map<String, Any?>> = jsonObject or emptyObject
+object JSONMain {
+    @JvmStatic fun main(args: Array<String>) {
+        if (args.isEmpty())
+            startInterpreter()
+        else
+            printFile(args[0])
+    }
 
-fun main(args: Array<String>) {
-    while (true) {
+    private fun printFile(path: String) {
         try {
-            print(">>> ")
-            val input = readLine() ?: exitProcess(0)
-            val result = json.parse(input)
+            val file = File(path)
+            val result = JSON.parseFile(file)
             println(result)
         } catch (e: ParseException) {
-            println(e.message)
+            System.err.println(e.message)
+        }
+    }
+
+    private fun startInterpreter() {
+        while (true) {
+            try {
+                print(">>> ")
+                val optionalInput: String? = readLine()
+                val input = optionalInput ?: exitProcess(1)
+
+                if (input == ":quit") {
+                    exitProcess(0)
+                } else {
+                    val result: Map<String, Any?> = JSON.parse(input)
+                    println(result)
+                }
+            } catch (e: ParseException) {
+                println(e.message)
+            }
         }
     }
 }

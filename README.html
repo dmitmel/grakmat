@@ -958,6 +958,7 @@ pre.line-numbers > code {
 </ul>
 </li>
 <li><a href="#recursion">Note: Recursion</a></li>
+<li><a href="#spaced-combinators">Note: Spaced combinators</a></li>
 </ul>
 </div>
 </div>
@@ -966,8 +967,8 @@ pre.line-numbers > code {
 <div class="sectionbody">
 <div class="paragraph">
 <p>Grakmat is a <a href="https://kotlinlang.org">Kotlin</a> library for creating language grammars. It can parse any
-<a href="https://wikipedia.org/wiki/EBNF">EBNF</a> grammars and contains line/column error reporting.
-A <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org/drimachine/grakmat/org/drimachine/grakmat/JSON.kt">JSON example</a> is included.</p>
+<a href="https://wikipedia.org/wiki/LL_parser">LL(*)</a> grammars and contains line/column error reporting.
+A <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org/drimachine/grakmat/JSON.kt">JSON example</a> is included.</p>
 </div>
 </div>
 </div>
@@ -1077,20 +1078,61 @@ A <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org
 <td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a</code>, but map the result to a new result using the <code>transformer</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a repeat(n)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a repeat n</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Match <code>a</code> in a sequence <strong>exactly</strong> <code>n</code> times, and return a result containing a list of all the matches.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a atLeast(n)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>repeat</code>, but match <strong>at least</strong> <code>n</code> times.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a atLeast n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a repeat n</code>, but match <strong>at least</strong> <code>n</code> times.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a inRange(start..end)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>repeat</code>, but match <strong>any count from <code>start</code> to <code>end</code></strong>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a inRange start..end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a repeat n</code>, but match <strong>any count from <code>start</code> to <code>end</code></strong>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>a withName name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Returns parser, which will use it’s <code>name</code> in description of the expected.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 3. Spaces Combinators</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><em>zeroOrMore</em>(a)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>zeroOrMore(a)</code>, but inserts spaces between results.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><em>oneOrMore</em>(a)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>oneOrMore(a)</code>, but inserts spaces between results.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>and</em> b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a and b</code>, but inserts spaces between <code>a</code> and <code>b</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>then</em> b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code><em>and</em></code>, but returns the result of <code>b</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>before</em> b</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code><em>and</em></code>, but returns the result of <code>a</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>repeat</em> n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a repeat n</code>, but inserts spaces between results.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>atLeast</em> n</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a atLeast n</code>, but inserts spaces between results.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>inRange</em> start..end</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a inRange</code>, but inserts spaces between results.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1105,7 +1147,7 @@ A <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org
     val result = mainRule.parse(input)
     println(result)
 } catch (e: ParseException) {
-    println(e.message)
+    println("Error: ${e.message}")
 }</code></pre>
 </div>
 </div>
@@ -1133,10 +1175,48 @@ val abc: Parser&lt;String, List&lt;String&gt;&gt; = string("Hello ") and zeroOrM
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="spaced-combinators">Note: Spaced combinators<a class="header-anchor" href="#spaced-combinators"><svg width="26px" height="26px" viewBox="0 0 512 512"><path fill="#BA3925" d="M482.25,210.752L346.5,346.502c-37.5,37.5-98.25,37.5-135.75,0l-45.25-45.25l45.25-45.25l45.25,45.25                                                                 c12.5,12.469,32.781,12.5,45.25,0L437,165.502c12.469-12.484,12.469-32.781,0-45.266l-45.25-45.25                                                                 c-12.469-12.469-32.781-12.469-45.25,0l-48.469,48.469c-22.469-13.219-48-18.891-73.281-17.188l76.5-76.531                                                                 c37.5-37.484,98.281-37.484,135.75,0l45.25,45.25C519.75,112.471,519.75,173.268,482.25,210.752z                                                                 M213.938,388.564L165.5,437.002                                                                 c-12.5,12.5-32.781,12.469-45.25,0L75,391.752c-12.5-12.469-12.5-32.75,0-45.25l135.75-135.75c12.469-12.469,32.781-12.469,45.25,0                                                                 l45.25,45.25l45.25-45.25l-45.25-45.25c-37.5-37.484-98.25-37.484-135.75,0L29.75,301.252c-37.5,37.5-37.5,98.281,0,135.75                                                                 L75,482.252c37.469,37.5,98.25,37.5,135.75,0l76.5-76.5C261.969,407.439,236.5,401.752,213.938,388.564z"></path></svg></a>
+</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Also, there’re some <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org/drimachine/grakmat/SpacedCombinators.kt">spaced-combinators</a> that insert spaces between results. Here’s the list
+of them:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><em>zeroOrMore</em>(a)</code></p>
+</li>
+<li>
+<p><code><em>oneOrMore</em>(a)</code></p>
+</li>
+<li>
+<p><code>a <em>and</em> b</code></p>
+</li>
+<li>
+<p><code>a <em>then</em> b</code></p>
+</li>
+<li>
+<p><code>a <em>before</em> b</code></p>
+</li>
+<li>
+<p><code>a <em>repeat</em> n</code></p>
+</li>
+<li>
+<p><code>a <em>atLeast</em> n</code></p>
+</li>
+<li>
+<p><code>a <em>inRange</em> start..end</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-28 18:01:46 EEST
+Last updated 2016-09-30 22:06:48 EEST
 </div>
 </div>
 <script>

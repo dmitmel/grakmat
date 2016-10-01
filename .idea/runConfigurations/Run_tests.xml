@@ -1,6 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Run tests" type="JUnit" factoryName="JUnit">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+    <extension name="io.halik.intellij.runner.RunConfigurationExtension" debug="false" experimentalCollectionsSupport="false" includePattern="" excludePattern="" version="2" />
     <module name="grakmat" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />

@@ -1,15 +1,16 @@
 = grakmat
-:github-repo-tree:     https://github.com/drimachine/grakmat/blob/master
-:sources-prefix:       {github-repo-tree}/src/main/kotlin/org/drimachine/grakmat
-:json-example-link:    {sources-prefix}/org/drimachine/grakmat/JSON.kt
-:parser-creators-link: {sources-prefix}/Parsers.kt
-:combinators-link:     {sources-prefix}/Combinators.kt
+:github-repo-tree:        https://github.com/drimachine/grakmat/blob/master
+:sources-prefix:          {github-repo-tree}/src/main/kotlin/org/drimachine/grakmat
+:json-example-link:       {sources-prefix}/JSON.kt
+:parser-creators-link:    {sources-prefix}/Parsers.kt
+:combinators-link:        {sources-prefix}/Combinators.kt
+:spaced-combinators-link: {sources-prefix}/SpacedCombinators.kt
 :toc: left
 :icons: font
 :toclevels: 3
 
 Grakmat is a https://kotlinlang.org[Kotlin] library for creating language grammars. It can parse any
-https://wikipedia.org/wiki/EBNF[EBNF] grammars and contains line/column error reporting.
+https://wikipedia.org/wiki/LL_parser[LL(*)] grammars and contains line/column error reporting.
 A {json-example-link}[JSON example] is included.
 
 [[usage]]
@@ -55,10 +56,22 @@ You can create parsers using {parser-creators-link}[parser creators] and combine
 | `a then b`                    | Just like `and`, but returns the result of `b`.
 | `a before b`                  | Just like `and`, but returns the result of `a`.
 | `a map { /* transformer */ }` | Just like `a`, but map the result to a new result using the `transformer`.
-| `a repeat(n)`                 | Match `a` in a sequence **exactly** `n` times, and return a result containing a list of all the matches.
-| `a atLeast(n)`                | Just like `repeat`, but match *at least* `n` times.
-| `a inRange(start..end)`       | Just like `repeat`, but match **any count from `start` to `end`**.
+| `a repeat n`                  | Match `a` in a sequence **exactly** `n` times, and return a result containing a list of all the matches.
+| `a atLeast n`                 | Just like `a repeat n`, but match *at least* `n` times.
+| `a inRange start..end`        | Just like `a repeat n`, but match **any count from `start` to `end`**.
 | `a withName name`             | Returns parser, which will use it's `name` in description of the expected.
+|===
+
+.Spaces Combinators
+|===
+| `_zeroOrMore_(a)`        | Just like `zeroOrMore(a)`, but inserts spaces between results.
+| `_oneOrMore_(a)`         | Just like `oneOrMore(a)`, but inserts spaces between results.
+| `a _and_ b`              | Just like `a and b`, but inserts spaces between `a` and `b`.
+| `a _then_ b`             | Just like `_and_`, but returns the result of `b`.
+| `a _before_ b`           | Just like `_and_`, but returns the result of `a`.
+| `a _repeat_ n`           | Just like `a repeat n`, but inserts spaces between results.
+| `a _atLeast_ n`          | Just like `a atLeast n`, but inserts spaces between results.
+| `a _inRange_ start..end` | Just like `a inRange`, but inserts spaces between results.
 |===
 
 [[step-2-parse]]
@@ -71,7 +84,7 @@ try {
     val result = mainRule.parse(input)
     println(result)
 } catch (e: ParseException) {
-    println(e.message)
+    println("Error: ${e.message}")
 }
 ----
 
@@ -90,3 +103,18 @@ val abc: Parser<String, List<String>> = string("Hello ") and zeroOrMore(abcRef)
 ----
 
 But, it's better to use combinators everywhere it's possible, because recursion can cause stack overflow!
+
+[[spaced-combinators]]
+== Note: Spaced combinators
+
+Also, there're some {spaced-combinators-link}[spaced-combinators] that insert spaces between results. Here's the list
+of them:
+
+* `_zeroOrMore_(a)`
+* `_oneOrMore_(a)`
+* `a _and_ b`
+* `a _then_ b`
+* `a _before_ b`
+* `a _repeat_ n`
+* `a _atLeast_ n`
+* `a _inRange_ start..end`

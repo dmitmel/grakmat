@@ -15,10 +15,10 @@
  */
 
 @file:JvmName("Combinators")
-
 package org.drimachine.grakmat
 
 import java.util.*
+
 
 /**
  * Creates parser from two others that tries to parse `a` if possible, otherwise parse `b`.
@@ -49,16 +49,16 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
                 val got: String? = getGotFrom(leftEx)
 
                 if (leftEx is UnexpectedEOFException)
-                    throw UnexpectedEOFException(mixedExpected, errorPosition).isFromNamedParser(isFromNamedParser)
+                    throw UnexpectedEOFException(mixedExpected, errorPosition, source).isFromNamedParser(isFromNamedParser)
                 else
-                    throw UnexpectedTokenException(mixedExpected, got, errorPosition).isFromNamedParser(isFromNamedParser)
+                    throw UnexpectedTokenException(got, mixedExpected, errorPosition, source).isFromNamedParser(isFromNamedParser)
             } catch (rightEx: UnexpectedTokenException) {
                 val mixedExpected: String        = getPropertyFrom(leftEx, rightEx)
                 val errorPosition: ErrorPosition = leftEx.errorPosition
                 val isFromNamedParser: Boolean   = isFromNamedParser(leftEx, rightEx)
                 val got: String? = getGotFrom(leftEx)
 
-                throw UnexpectedTokenException(mixedExpected, got, errorPosition).isFromNamedParser(isFromNamedParser)
+                throw UnexpectedTokenException(got, mixedExpected, errorPosition, source).isFromNamedParser(isFromNamedParser)
             }
         }
     }
@@ -189,12 +189,12 @@ class NamedParser<out A>(val target: Parser<A>, val name: String) : Parser<A> {
                 if (e.isFromNamedParser)
                     throw e
                 else
-                    throw UnexpectedEOFException(this.name, e.errorPosition).isFromNamedParser(true)
+                    throw UnexpectedEOFException(this.name, e.errorPosition, source).isFromNamedParser(true)
             } catch (e: UnexpectedTokenException) {
                 if (e.isFromNamedParser)
                     throw e
                 else
-                    throw UnexpectedTokenException(this.name, e.got, e.errorPosition).isFromNamedParser(true)
+                    throw UnexpectedTokenException(e.got, this.name, e.errorPosition, source).isFromNamedParser(true)
             }
 
     override fun toString(): String = expectedDescription
@@ -296,3 +296,28 @@ class RangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : Parser<
 
     override fun toString(): String = expectedDescription
 }
+
+
+/**
+ * Alias to `atLeast(0, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> zeroOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 0
+
+/**
+ * Alias to `atLeast(1, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> oneOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 1
+
+/**
+ * Creates parser, which will try to consume input with target parser,
+ * or return `null`.
+ *
+ * @param target Target parser.
+ * @see empty
+ */
+fun <A> optional(target: Parser<A>): Parser<A?> = target or empty<A>()
+

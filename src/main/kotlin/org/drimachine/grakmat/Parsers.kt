@@ -15,8 +15,9 @@
  */
 
 @file:JvmName("Parsers")
-
 package org.drimachine.grakmat
+
+import java.io.File
 
 
 /**
@@ -32,12 +33,10 @@ data class Result<out A>(val value: A, val remainder: String)
  * Data-class for source.
  *
  * @param text Text in the source.
- * @param sourceName Source name. By default is `"<inline>"`.
+ * @param fileName Source name. By default is `"<inline>"`.
  */
 data class Source
-@JvmOverloads constructor(val text: String, val sourceName: String = "<inline>") {
-    fun errorPosition(index: Int): ErrorPosition = text.errorPosition(index)
-}
+@JvmOverloads constructor(val text: String, val fileName: String = "<inline>")
 
 
 /**
@@ -68,7 +67,21 @@ interface Parser<out A> {
             return value
         } else {
             val errorIndex = input.length - remainder.length
-            throw UnexpectedTokenException("<EOF>", remainder.boundLengthTo(20), input.errorPosition(errorIndex))
+            throw UnexpectedTokenException(remainder.boundLengthTo(20), "<EOF>", input.errorPosition(errorIndex), source)
+        }
+    }
+
+    /** Just like [parse], but loads content from file. */
+    fun parseFile(file: File): A {
+        val text = file.readText()
+        val source = Source(text, file.toString())
+        val (value, remainder) = eat(source, text)
+
+        if (remainder.isEmpty()) {
+            return value
+        } else {
+            val errorIndex = text.length - remainder.length
+            throw UnexpectedTokenException(remainder.boundLengthTo(20), "<EOF>", text.errorPosition(errorIndex), source)
         }
     }
 
@@ -147,14 +160,14 @@ class StringParser(val expected: String) : Parser<String> {
     override fun eat(source: Source, input: String): Result<String> {
         if (expected.length > input.length) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         // Now, length of the input will be equal or greater than length of the expected sequence,
         // so I use indexes of expected to check tokens
         if (!input.regionMatches(0, expected, 0, expected.length)) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(input.boundLengthTo(20), expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         val remainder = input.substring(expected.length, input.length)
@@ -215,12 +228,12 @@ class CharParser(val expected: Char) : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         if (input[0] != expected) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(input.boundLengthTo(20), expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         val remainder = input.substring(1)
@@ -254,13 +267,13 @@ class IncludedCharParser(val included: Iterable<Char>) : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         val value = input[0]
         if (value !in included) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(input.boundLengthTo(20), expectedDescription, source.text.errorPosition(errorIndex), source)
         }
         
         val remainder = input.substring(1)
@@ -294,13 +307,13 @@ class ExcludedCharParser(val excluded: Iterable<Char>) : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         val value = input[0]
         if (value in excluded) {
             val errorIndex = source.text.length - input.length
-            throw UnexpectedTokenException(expectedDescription, input.boundLengthTo(20), source.errorPosition(errorIndex))
+            throw UnexpectedTokenException(input.boundLengthTo(20), expectedDescription, source.text.errorPosition(errorIndex), source)
         }
         
         val remainder = input.substring(1)
@@ -326,7 +339,7 @@ class AnyCharParser : Parser<Char> {
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
             val errorIndex = source.text.length
-            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex))
+            throw UnexpectedEOFException(expectedDescription, source.text.errorPosition(errorIndex), source)
         }
 
         val value = input[0]
@@ -336,27 +349,3 @@ class AnyCharParser : Parser<Char> {
 
     override fun toString(): String = expectedDescription
 }
-
-
-/**
- * Alias to `atLeast(0, xxx)`.
- *
- * @see atLeast
- */
-fun <A> zeroOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 0
-
-/**
- * Alias to `atLeast(1, xxx)`.
- *
- * @see atLeast
- */
-fun <A> oneOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 1
-
-/**
- * Creates parser, which will try to consume input with target parser,
- * or return `null`.
- *
- * @param target Target parser.
- * @see empty
- */
-fun <A> optional(target: Parser<A>): Parser<A?> = target or empty<A>()

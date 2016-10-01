@@ -15,10 +15,12 @@
  */
 
 @file:JvmName("Strings")
-
 package org.drimachine.grakmat
 
 
+/**
+ * Adds [ellipsis] to [String] if it's length is greater than [maxLength].
+ */
 @JvmOverloads
 fun String.boundLengthTo(maxLength: Int, ellipsis: String = "..."): String =
         if (this.isEmpty())
@@ -31,7 +33,7 @@ fun String.boundLengthTo(maxLength: Int, ellipsis: String = "..."): String =
             this
 
 
-        /**
+/**
  * Data-class for data about the error position.
  *
  * @param lineNumber Line number.

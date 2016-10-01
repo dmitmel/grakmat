@@ -1,7 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="org.thinkincog.drimachine.JSON" type="JetRunConfigurationType" factoryName="Kotlin">
+  <configuration default="false" name="org.drimachine.grakmat.JSONMain" type="JetRunConfigurationType" factoryName="Kotlin">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-    <option name="MAIN_CLASS_NAME" value="org.drimachine.grakmat.JSON" />
+    <extension name="io.halik.intellij.runner.RunConfigurationExtension" debug="false" experimentalCollectionsSupport="false" includePattern="" excludePattern="" version="2" />
+    <option name="MAIN_CLASS_NAME" value="org.drimachine.grakmat.JSONMain" />
     <option name="VM_PARAMETERS" value="" />
     <option name="PROGRAM_PARAMETERS" value="" />
     <option name="WORKING_DIRECTORY" value="" />

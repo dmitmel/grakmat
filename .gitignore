@@ -13,3 +13,7 @@ build/
 build-asciidoc.rb
 prism.*
 asciidoc-theme-extensions.css
+
+## Experimental features
+# Example for JSON schema definitions
+src/main/kotlin/org/drimachine/grakmat/JSONSchema.*
