@@ -35,18 +35,7 @@ data class Result<out A>(val value: A, val remainder: String)
  * @param text Text in the source.
  * @param fileName Source name. By default is `"<inline>"`.
  */
-data class Source
-@JvmOverloads constructor(val text: String, val fileName: String = "<inline>")
-
-
-/**
- * Data-class for input that must be processed by parser.
- *
- * @param text Text for *THIS* parser.
- * @param stackTrace List of expected messages for easy debugging.
- */
-data class CurrentInput
-@JvmOverloads constructor(val text: String, val stackTrace: List<String> = emptyList())
+data class Source(val text: String, val fileName: String)
 
 
 /**
@@ -58,24 +47,21 @@ interface Parser<out A> {
     /** Description for expected token. */
     val expectedDescription: String
 
-    /** Returns [A] instead of [Result]. */
     fun parse(input: String): A {
-        val source = Source(input)
-        val (value, remainder) = eat(source, input)
-
-        if (remainder.isEmpty()) {
-            return value
-        } else {
-            val errorIndex = input.length - remainder.length
-            throw UnexpectedTokenException(remainder.boundLengthTo(20), "<EOF>", input.errorPosition(errorIndex), source)
-        }
+        val source = Source(input, "<inline>")
+        return parseSource(source)
     }
 
-    /** Just like [parse], but loads content from file. */
     fun parseFile(file: File): A {
         val text = file.readText()
-        val source = Source(text, file.toString())
-        val (value, remainder) = eat(source, text)
+        val fileName: String = file.absolutePath
+        val source = Source(text, fileName)
+        return parseSource(source)
+    }
+
+    fun parseSource(source: Source): A {
+        val text = source.text
+        val (value: A, remainder: String) = eat(source, text)
 
         if (remainder.isEmpty()) {
             return value

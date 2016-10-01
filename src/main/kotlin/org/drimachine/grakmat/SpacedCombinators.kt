@@ -19,6 +19,7 @@ package org.drimachine.grakmat
 
 import java.util.*
 
+
 var space: Parser<Char> = anyOf(' ', '\t', '\r', '\n') withName "space"
 val optionalSpaces: Parser<String> = zeroOrMore(space)
         .map { spaces: List<Char> -> spaces.joinToString("") }
@@ -48,9 +49,9 @@ class SpacedAndParser<out A, out B>(val leftParser: Parser<A>, val rightParser: 
         get() = "${leftParser.expectedDescription} and ${rightParser.expectedDescription}"
 
     override fun eat(source: Source, input: String): Result<Pair<A, B>> {
-        val leftResult   = leftParser.eat(source,  input)
-        val middleResult = optionalSpaces.eat(source, leftResult.remainder)
-        val rightResult  = rightParser.eat(source, middleResult.remainder)
+        val leftResult: Result<A>        = leftParser.eat(source,  input)
+        val middleResult: Result<String> = optionalSpaces.eat(source, leftResult.remainder)
+        val rightResult: Result<B>       = rightParser.eat(source, middleResult.remainder)
         return Result(leftResult.value to rightResult.value, rightResult.remainder)
     }
 
@@ -76,9 +77,9 @@ class SpacedRepeatParser<out A>(val target: Parser<A>, val times: Int) : Parser<
 
         // (1..times) - repeat folding 'times' times
         for (time in 1..times) {
-            val next = target.eat(source, remainder)
+            val next: Result<A> = target.eat(source, remainder)
             list.add(next.value)
-            val spacesResult = optionalSpaces.eat(source, next.remainder)
+            val spacesResult: Result<String> = optionalSpaces.eat(source, next.remainder)
             remainder = spacesResult.value
         }
 
@@ -95,6 +96,20 @@ class SpacedRepeatParser<out A>(val target: Parser<A>, val times: Int) : Parser<
 infix fun <A> Parser<A>._atLeast_(times: Int): Parser<List<A>> = SpacedAtLeastParser(this, times)
 
 /**
+ * Alias to `atLeast(0, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> _zeroOrMore_(target: Parser<A>): Parser<List<A>> = target _atLeast_ 0
+
+/**
+ * Alias to `atLeast(1, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> _oneOrMore_(target: Parser<A>): Parser<List<A>> = target _atLeast_ 1
+
+/**
  * @see _atLeast_
  */
 class SpacedAtLeastParser<out A>(val target: Parser<A>, val times: Int) : Parser<List<A>> {
@@ -102,14 +117,14 @@ class SpacedAtLeastParser<out A>(val target: Parser<A>, val times: Int) : Parser
         get() = "${target.expectedDescription} at least $times times"
 
     override fun eat(source: Source, input: String): Result<List<A>> {
-        var (list, remainder) = target.repeat(times).eat(source, input)
+        var (list: List<A>, remainder: String) = target.repeat(times).eat(source, input)
         list = ArrayList<A>(list)
 
         do {
-            val (next, nextRemainder) = optional(target).eat(source, remainder)
+            val (next: A?, nextRemainder: String) = optional(target).eat(source, remainder)
             if (next != null) {
                 list.add(next)
-                val spacesResult = optionalSpaces.eat(source, nextRemainder)
+                val spacesResult: Result<String> = optionalSpaces.eat(source, nextRemainder)
                 remainder = spacesResult.remainder
             } else {
                 remainder = nextRemainder
@@ -140,12 +155,12 @@ class SpacedRangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : P
         list = ArrayList<A>(list)
 
         do {
-            val (next, nextRemainder) = optional(target).eat(source, remainder)
+            val (next: A?, nextRemainder: String) = optional(target).eat(source, remainder)
             if (next != null) {
                 list.add(next)
                 remainder = nextRemainder
             } else {
-                val spacesResult = optionalSpaces.eat(source, nextRemainder)
+                val spacesResult: Result<String> = optionalSpaces.eat(source, nextRemainder)
                 remainder = spacesResult.remainder
             }
         } while (next != null && list.size < bounds.endInclusive)
@@ -155,18 +170,3 @@ class SpacedRangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : P
 
     override fun toString(): String = expectedDescription
 }
-
-
-/**
- * Alias to `atLeast(0, xxx)`.
- *
- * @see atLeast
- */
-fun <A> _zeroOrMore_(target: Parser<A>): Parser<List<A>> = target _atLeast_ 0
-
-/**
- * Alias to `atLeast(1, xxx)`.
- *
- * @see atLeast
- */
-fun <A> _oneOrMore_(target: Parser<A>): Parser<List<A>> = target _atLeast_ 1

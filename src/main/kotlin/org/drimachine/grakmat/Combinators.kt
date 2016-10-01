@@ -17,6 +17,7 @@
 @file:JvmName("Combinators")
 package org.drimachine.grakmat
 
+import java.lang.reflect.*
 import java.util.*
 
 
@@ -30,23 +31,32 @@ import java.util.*
 infix fun <A> Parser<A>.or(other: Parser<A>): Parser<A> = OrParser(this, other)
 
 /**
+ * Creates parser, which will try to consume input with target parser,
+ * or return `null`.
+ *
+ * @param target Target parser.
+ * @see empty
+ */
+fun <A> optional(target: Parser<A>): Parser<A?> = target or empty<A>()
+
+/**
  * @see or
  */
 class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : Parser<A> {
     override val expectedDescription: String
         get() = "${leftParser.expectedDescription} or ${rightParser.expectedDescription}"
 
-    override fun eat(source: Source, input: String): Result<A> {
+    override fun eat(source: Source, input: String): Result<A> =
         try {
-            return leftParser.eat(source, input)
+            leftParser.eat(source, input)
         } catch (leftEx: ParseException) {
             try {
-                return rightParser.eat(source, input)
+                rightParser.eat(source, input)
             } catch (rightEx: UnexpectedEOFException) {
                 val mixedExpected: String        = getPropertyFrom(leftEx, rightEx)
                 val errorPosition: ErrorPosition = leftEx.errorPosition
                 val isFromNamedParser: Boolean   = isFromNamedParser(leftEx, rightEx)
-                val got: String? = getGotFrom(leftEx)
+                val got: String?                 = getGotFrom(leftEx)
 
                 if (leftEx is UnexpectedEOFException)
                     throw UnexpectedEOFException(mixedExpected, errorPosition, source).isFromNamedParser(isFromNamedParser)
@@ -56,12 +66,11 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
                 val mixedExpected: String        = getPropertyFrom(leftEx, rightEx)
                 val errorPosition: ErrorPosition = leftEx.errorPosition
                 val isFromNamedParser: Boolean   = isFromNamedParser(leftEx, rightEx)
-                val got: String? = getGotFrom(leftEx)
+                val got: String?                 = getGotFrom(leftEx)
 
                 throw UnexpectedTokenException(got, mixedExpected, errorPosition, source).isFromNamedParser(isFromNamedParser)
             }
         }
-    }
 
     private fun isFromNamedParser(leftEx: ParseException, rightEx: ParseException): Boolean =
             leftEx.isFromNamedParser || rightEx.isFromNamedParser
@@ -73,7 +82,7 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
     }
 
     private fun getPropertyFrom(leftEx: ParseException, rightEx: ParseException): String {
-        var leftExpected: String? = getPropertyFrom(leftEx, "expected")?.toString()
+        var leftExpected:  String? = getPropertyFrom(leftEx, "expected")?.toString()
         var rightExpected: String? = getPropertyFrom(rightEx, "expected")?.toString()
 
         if (leftExpected == null)
@@ -85,14 +94,14 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
     }
 
     private fun getPropertyFrom(obj: Any, propertyName: String): Any? {
-        val clazz = obj.javaClass
+        val clazz: Class<Any> = obj.javaClass
 
         try {
-            val field = clazz.getField(propertyName)
+            val field: Field = clazz.getField(propertyName)
             return field.get(obj)
         } catch (e: ReflectiveOperationException) {
             try {
-                val method = clazz.getMethod("get" + propertyName.capitalize())
+                val method: Method = clazz.getMethod("get" + propertyName.capitalize())
                 return method.invoke(obj)
             } catch (e: ReflectiveOperationException) {
                 return null
@@ -131,8 +140,8 @@ class AndParser<out A, out B>(val leftParser: Parser<A>, val rightParser: Parser
         get() = "${leftParser.expectedDescription} and ${rightParser.expectedDescription}"
 
     override fun eat(source: Source, input: String): Result<Pair<A, B>> {
-        val leftResult  = leftParser.eat(source,  input)
-        val rightResult = rightParser.eat(source, leftResult.remainder)
+        val leftResult:  Result<A> = leftParser.eat(source,  input)
+        val rightResult: Result<B> = rightParser.eat(source, leftResult.remainder)
         return Result(leftResult.value to rightResult.value, rightResult.remainder)
     }
 
@@ -157,8 +166,8 @@ class MappedParser<A, out B>(val target: Parser<A>, val transform: (A) -> B) : P
         get()  = target.expectedDescription
 
     override fun eat(source: Source, input: String): Result<B> {
-        val rawResult = target.eat(source, input)
-        val mappedValue = transform(rawResult.value)
+        val rawResult: Result<A> = target.eat(source, input)
+        val mappedValue: B = transform(rawResult.value)
         return Result(mappedValue, rawResult.remainder)
     }
 
@@ -222,7 +231,7 @@ class RepeatParser<out A>(val target: Parser<A>, val times: Int) : Parser<List<A
 
         // (1..times) - repeat folding 'times' times
         for (time in 1..times) {
-            val next = target.eat(source, remainder)
+            val next: Result<A> = target.eat(source, remainder)
             list.add(next.value)
             remainder = next.remainder
         }
@@ -243,6 +252,20 @@ class RepeatParser<out A>(val target: Parser<A>, val times: Int) : Parser<List<A
 infix fun <A> Parser<A>.atLeast(times: Int): Parser<List<A>> = AtLeastParser(this, times)
 
 /**
+ * Alias to `atLeast(0, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> zeroOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 0
+
+/**
+ * Alias to `atLeast(1, xxx)`.
+ *
+ * @see atLeast
+ */
+fun <A> oneOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 1
+
+/**
  * @see atLeast
  */
 class AtLeastParser<out A>(val target: Parser<A>, val times: Int) : Parser<List<A>> {
@@ -250,16 +273,16 @@ class AtLeastParser<out A>(val target: Parser<A>, val times: Int) : Parser<List<
         get() = "${target.expectedDescription} at least $times times"
 
     override fun eat(source: Source, input: String): Result<List<A>> {
-        var (list, remainder) = target.repeat(times).eat(source, input)
-        list = ArrayList<A>(list)
+        var (results: List<A>, remainder: String) = target.repeat(times).eat(source, input)
+        results = ArrayList<A>(results)
 
         do {
-            val (next, r) = optional(target).eat(source, remainder)
-            if (next != null) list.add(next)
-            remainder = r
-        } while (next != null)
+            val (nextResult: A?, nextRemainder: String) = optional(target).eat(source, remainder)
+            if (nextResult != null) results.add(nextResult)
+            remainder = nextRemainder
+        } while (nextResult != null)
 
-        return Result(Collections.unmodifiableList(list), remainder)
+        return Result(Collections.unmodifiableList(results), remainder)
     }
 
     override fun toString(): String = expectedDescription
@@ -282,42 +305,17 @@ class RangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : Parser<
         get() = "${target.expectedDescription}{${bounds.start},${bounds.endInclusive}}"
 
     override fun eat(source: Source, input: String): Result<List<A>> {
-        var (list, remainder) = target.repeat(bounds.start).eat(source, input)
-        list = ArrayList<A>(list)
+        var (results: List<A>, remainder: String) = target.repeat(bounds.start).eat(source, input)
+        results = ArrayList<A>(results)
 
         do {
-            val (next, r) = optional(target).eat(source, remainder)
-            if (next != null) list.add(next)
-            remainder = r
-        } while (next != null && list.size < bounds.endInclusive)
+            val (nextResult: A?, nextRemainder: String) = optional(target).eat(source, remainder)
+            if (nextResult != null) results.add(nextResult)
+            remainder = nextRemainder
+        } while (nextResult != null && results.size < bounds.endInclusive)
 
-        return Result(Collections.unmodifiableList(list), remainder)
+        return Result(Collections.unmodifiableList(results), remainder)
     }
 
     override fun toString(): String = expectedDescription
 }
-
-
-/**
- * Alias to `atLeast(0, xxx)`.
- *
- * @see atLeast
- */
-fun <A> zeroOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 0
-
-/**
- * Alias to `atLeast(1, xxx)`.
- *
- * @see atLeast
- */
-fun <A> oneOrMore(target: Parser<A>): Parser<List<A>> = target atLeast 1
-
-/**
- * Creates parser, which will try to consume input with target parser,
- * or return `null`.
- *
- * @param target Target parser.
- * @see empty
- */
-fun <A> optional(target: Parser<A>): Parser<A?> = target or empty<A>()
-

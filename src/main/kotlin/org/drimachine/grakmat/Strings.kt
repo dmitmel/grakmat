@@ -20,17 +20,27 @@ package org.drimachine.grakmat
 
 /**
  * Adds [ellipsis] to [String] if it's length is greater than [maxLength].
+ * Also, if result contains line separator - it will be reduced to string
+ * before first separator.
  */
 @JvmOverloads
-fun String.boundLengthTo(maxLength: Int, ellipsis: String = "..."): String =
-        if (this.isEmpty())
-            throw IllegalArgumentException("String is empty")
-        else if (maxLength < 1)
-            throw IllegalArgumentException("Max length is smaller than 1")
-        else if (this.length > maxLength)
-            this.substring(0, maxLength) + ellipsis
-        else
-            this
+fun String.boundLengthTo(maxLength: Int, ellipsis: String = "..."): String {
+    val result =
+            if (this.isEmpty()) {
+                throw IllegalArgumentException("String is empty")
+            } else if (maxLength < 1) {
+                throw IllegalArgumentException("Max length is smaller than 1")
+            } else if (this.length > maxLength) {
+                this.substring(0, maxLength) + ellipsis
+            } else {
+                this
+            }
+    val indexOfLineSep = result.indexOfAny(listOf("\r\n", "\r", "\n"))
+    return if (indexOfLineSep >= 0)
+               result.substring(0, indexOfLineSep) + ellipsis
+           else
+               result
+}
 
 
 /**
@@ -57,14 +67,12 @@ data class ErrorPosition(val lineNumber: Int, val columnNumber: Int, val lineSou
      * Where `^` is pointer to the column number.
      */
     override fun toString(): String {
-        val sourcePrefix = "$lineNumber: "
         val columnPointer = buildString {
-            append(" ".repeat(sourcePrefix.length))
             append(" ".repeat(columnIndex))
             append('^')
         }
 
-        return "$sourcePrefix$lineSource\n$columnPointer"
+        return "$lineSource\n$columnPointer"
     }
 }
 
@@ -72,7 +80,7 @@ fun String.errorPosition(index: Int): ErrorPosition {
     var offset = 0        // The largest index in a previous line
     var lineNumber = 1
 
-    val lines = this.linesWithSeparators()
+    val lines: List<String> = this.linesWithSeparators()
     for (line in lines) {
         // Long-long offset  <--- Offset
         // Long-long offset  <--- Offset
@@ -94,7 +102,8 @@ fun String.errorPosition(index: Int): ErrorPosition {
     val lastLineNumber   = lines.size
     val lastLineSource   = if (lines.isEmpty()) "" else lines.last()
     val lastColumnNumber = lastLineSource.length + 1
-    return ErrorPosition(lastLineNumber, lastColumnNumber, lastLineSource)
+    val lastLineWithoutSeparator = lastLineSource.removeSuffix("\r\n").removeSuffix("\r").removeSuffix("\n")
+    return ErrorPosition(lastLineNumber, lastColumnNumber, lastLineWithoutSeparator)
 }
 
 /**

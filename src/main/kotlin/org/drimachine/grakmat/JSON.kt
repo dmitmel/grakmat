@@ -21,18 +21,7 @@ import kotlin.system.exitProcess
 
 
 object JSON {
-    /**
-     * Adds `this` value to the head of list.
-     *
-     * @receiver Head of the result.
-     * @param list Tail of the result
-     */
-    private operator fun <T> T.plus(list: List<T>): List<T> {
-        val result = arrayListOf<T>()
-        result += this
-        result += list
-        return result.toList()
-    }
+    private fun <A> listOf(head: A, tail: List<A>): List<A> = arrayListOf(head).apply { addAll(tail) }
 
     // Forward references
     private val jsonObjectRef: Parser<Map<String, Any?>> = ref { jsonObject }
@@ -42,7 +31,7 @@ object JSON {
     private val rightSquareBracket: Parser<Char> = chr(']') withName "\']\'"
     // values: value (',' value)*
     private val values: Parser<List<Any?>> = (valueRef _and_ _zeroOrMore_(chr(',') _then_ valueRef))
-            .map { it: Pair<Any?, List<Any?>> -> it.first + it.second }
+            .map { it: Pair<Any?, List<Any?>> -> listOf(it.first, it.second) }
     // array: '[' values ']'
     private val array: Parser<List<Any?>> = (leftSquareBracket _then_ values _before_ rightSquareBracket)
             .withName("array")
@@ -103,7 +92,7 @@ object JSON {
     private val rightBrace: Parser<Char> = chr('}') withName "\'}\'"
     // pairs: pair (',' pair)*
     private val pairs: Parser<List<Pair<String, Any?>>> = (pair _and_ _zeroOrMore_(chr(',') _then_ pair))
-            .map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> it.first + it.second }
+            .map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> listOf(it.first, it.second) }
     // jsonObject: '{' pairs '}' | '{' '}'
     private val jsonObject: Parser<Map<String, Any?>> =
             (optionalSpaces then (
