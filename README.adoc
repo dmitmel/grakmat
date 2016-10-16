@@ -1,0 +1,124 @@
+= grakmat
+:github-repo-tree:        https://github.com/drimachine/grakmat/blob/master
+:sources-prefix:          {github-repo-tree}/src/main/kotlin/org/drimachine/grakmat
+:json-example-link:       {sources-prefix}/grammars/JSON.kt
+:parser-creators-link:    {sources-prefix}/Parsers.kt
+:combinators-link:        {sources-prefix}/Combinators.kt
+:spaced-combinators-link: {sources-prefix}/SpacedCombinators.kt
+:kotlin-stdlib-link:  http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.0.4
+:kotlin-runtime-link: http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.0.4
+:toc: left
+:icons: font
+:toclevels: 3
+
+Grakmat is a https://kotlinlang.org[Kotlin] library for creating language grammars. It can parse any
+https://wikipedia.org/wiki/LL_parser[LL(*)] grammars and contains line/column error reporting.
+A {json-example-link}[JSON example] is included.
+
+[[usage]]
+== Usage
+
+[[step-0-setup]]
+=== Step 0: Setup
+
+Unfortunately, Grakmat hasn't been published to Maven Central. So, you have to add JAR to your classpath:
+
+[source,groovy]
+----
+dependencies {
+    compile file("/path/to/grakmat-xxx.jar")
+}
+----
+
+Library has no dependencies, except {kotlin-stdlib-link}[Kotlin standard library] and {kotlin-runtime-link}[Kotlin runtime].
+
+[[step-1-parsers]]
+=== Step 1: Parsers
+
+You can create parsers using {parser-creators-link}[parser creators] and combine them using
+{combinators-link}[combinators] into rules.
+
+.Parser Creators
+|===
+| `empty<T>()`           | Matches an empty input and returns a `null` result of type `T`.
+| `emptyString()`        | Works like `empty<T>()`, but returns empty string.
+| `string(s)`, `str(s)`  | Matches expected input and return it.
+| `ref { /* parser */ }` | See <<recursion,recursion>>.
+| `char(c)`, `chr(c)`    | Matches expected character and returns it. It's better to use it instead of `string(s)` with one character.
+| `anyOf(chars)`         | Matches any character of `chars` and returns it.
+| `except(chars)`        | Matches any character except any of `chars` and returns it.
+| `anyChar()`            | Matches any character and returns it.
+|===
+
+.Combinators
+|===
+| `optional(a)`                 | Matches `a` if possible, otherwise returns `null`.
+| `zeroOrMore(a)`               | Just like `atLeast(0, a)`.
+| `oneOrMore(a)`                | Just like `atLeast(1, a)`.
+| `a or b`                      | Parses `a` if possible, otherwise parses `b`. Returns the result of the successful parse.
+| `a and b`                     | Parses `a` and then `b`. Returns a `Pair<A, B>` of both results.
+| `a then b`                    | Just like `and`, but returns the result of `b`.
+| `a before b`                  | Just like `and`, but returns the result of `a`.
+| `a map { /* transformer */ }` | Just like `a`, but map the result to a new result using the `transformer`.
+| `a repeat n`                  | Match `a` in a sequence **exactly** `n` times, and return a result containing a list of all the matches.
+| `a atLeast n`                 | Just like `a repeat n`, but match *at least* `n` times.
+| `a inRange start..end`        | Just like `a repeat n`, but match **any count from `start` to `end`**.
+| `a withName name`             | Returns parser, which will use it's `name` in description of the expected.
+|===
+
+.Spaces Combinators
+|===
+| `_zeroOrMore_(a)`        | Just like `zeroOrMore(a)`, but inserts spaces between results.
+| `_oneOrMore_(a)`         | Just like `oneOrMore(a)`, but inserts spaces between results.
+| `a _and_ b`              | Just like `a and b`, but inserts spaces between `a` and `b`.
+| `a _then_ b`             | Just like `_and_`, but returns the result of `b`.
+| `a _before_ b`           | Just like `_and_`, but returns the result of `a`.
+| `a _repeat_ n`           | Just like `a repeat n`, but inserts spaces between results.
+| `a _atLeast_ n`          | Just like `a atLeast n`, but inserts spaces between results.
+| `a _inRange_ start..end` | Just like `a inRange`, but inserts spaces between results.
+|===
+
+[[step-2-parse]]
+=== Step 2: Parse
+
+[source,kotlin]
+----
+try {
+    val input = "bla-bla-bla"
+    val result = mainRule.parse(input)
+    println(result)
+} catch (e: ParseException) {
+    println("Error: ${e.message}")
+}
+----
+
+[[recursion]]
+== Note: Recursion
+
+If you have a rule or system of rules that involves recursion, then you'll have to use the `ref` function to make it work.
+
+[source,kotlin]
+----
+// Put all refs first
+val abcRef: Parser<String, List<String>> = ref({ abc })
+
+// Then put all rules
+val abc: Parser<String, List<String>> = string("Hello ") and zeroOrMore(abcRef)
+----
+
+But, it's better to use combinators everywhere it's possible, because recursion can cause stack overflow!
+
+[[spaced-combinators]]
+== Note: Spaced combinators
+
+Also, there're some {spaced-combinators-link}[spaced-combinators] that insert spaces between results. Here's the list
+of them:
+
+* `_zeroOrMore_(a)`
+* `_oneOrMore_(a)`
+* `a _and_ b`
+* `a _then_ b`
+* `a _before_ b`
+* `a _repeat_ n`
+* `a _atLeast_ n`
+* `a _inRange_ start..end`
