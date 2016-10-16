@@ -4,7 +4,6 @@ buildscript {
         kotlinVersion = '1.0.4'
         junitVersion = '4.12'
         dokkaVersion = '0.9.9'
-        argparse4jVersion = '0.7.0'
     }
     
     repositories {
