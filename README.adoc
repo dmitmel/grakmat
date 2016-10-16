@@ -88,7 +88,7 @@ If you have a rule or system of rules that involves recursion, then you'll have 
 [source,kotlin]
 ----
 // Put all refs first
-val abcRef: Parser<String, List<String>> = ref({ abc })
+val abcRef: Parser<String, List<String>> = ref { abc }
 
 // Then put all rules
 val abc: Parser<String, List<String>> = string("Hello ") and zeroOrMore(abcRef)
