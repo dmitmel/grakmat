@@ -1,7 +1,7 @@
 = grakmat
 :github-repo-tree:        https://github.com/drimachine/grakmat/blob/master
 :sources-prefix:          {github-repo-tree}/src/main/kotlin/org/drimachine/grakmat
-:json-example-link:       {sources-prefix}/JSON.kt
+:json-example-link:       {sources-prefix}/grammars/JSON.kt
 :parser-creators-link:    {sources-prefix}/Parsers.kt
 :combinators-link:        {sources-prefix}/Combinators.kt
 :spaced-combinators-link: {sources-prefix}/SpacedCombinators.kt
