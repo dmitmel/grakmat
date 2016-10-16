@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package org.drimachine.grakmat
+package org.drimachine.grakmat.grammars
 
+import org.drimachine.grakmat.*
 import java.io.File
-import kotlin.system.exitProcess
-
 
 object JSON {
     private fun <A> listOf(head: A, tail: List<A>): List<A> = arrayListOf(head).apply { addAll(tail) }
 
     // Forward references
     private val jsonObjectRef: Parser<Map<String, Any?>> = ref { jsonObject }
-    private val valueRef:      Parser<Any?>              = ref { value }
+    private val valueRef: Parser<Any?> = ref { value }
 
-    private val leftSquareBracket:  Parser<Char> = chr('[') withName "\'[\'"
+    private val leftSquareBracket: Parser<Char> = chr('[') withName "\'[\'"
     private val rightSquareBracket: Parser<Char> = chr(']') withName "\']\'"
     // values: value (',' value)*
     private val values: Parser<List<Any?>> = (valueRef _and_ _zeroOrMore_(chr(',') _then_ valueRef))
@@ -44,7 +43,7 @@ object JSON {
     private val float: Parser<Float> = integer before chr('.') and oneOrMore(digit) map { parts: Pair<Int, List<Char>> -> partsToFloat(parts) }
     // number: float | integer
     @Suppress("UNCHECKED_CAST")
-    private val number:  Parser<Number> = ((float or integer) as Parser<Number>)
+    private val number: Parser<Number> = ((float or integer) as Parser<Number>)
             .withName("number")
 
     private fun digitsToInteger(digits: List<Char>): Int = digits.joinToString("").toInt()
@@ -71,16 +70,16 @@ object JSON {
     }
     // Character: ~('"' | '\\') | EscapedCharacter
     private val character: Parser<Char> = except('\"', '\\') or escapedCharacter withName "character"
-    private val quote:     Parser<Char> = chr('\"') withName "\'\"\'"
+    private val quote: Parser<Char> = chr('\"') withName "\'\"\'"
     // stringLiteral: '"' (Character)+ '"'
     private val stringLiteral: Parser<String> = (quote then zeroOrMore(character) before quote)
             .map { it.joinToString("") }
             .withName("string literal")
 
-    private val colon:      Parser<Char>    = chr(':') withName "\':\'"
-    private val trueValue:  Parser<Boolean> = str("true")  map { true }
+    private val colon: Parser<Char> = chr(':') withName "\':\'"
+    private val trueValue: Parser<Boolean> = str("true")  map { true }
     private val falseValue: Parser<Boolean> = str("false") map { false }
-    private val nullValue:  Parser<Any?>    = str("null")  map { null }
+    private val nullValue: Parser<Any?> = str("null")  map { null }
     // value: stringLiteral | number | json | array | 'true' | 'false' | 'null'
     private val value: Parser<Any?> = (stringLiteral or number or jsonObjectRef or array or trueValue or falseValue or nullValue)
             .withName("value")
@@ -88,59 +87,20 @@ object JSON {
     private val pair: Parser<Pair<String, Any?>> = (stringLiteral _before_ colon _and_ value)
             .withName("pair")
 
-    private val leftBrace:  Parser<Char> = chr('{') withName "\'{\'"
+    private val leftBrace: Parser<Char> = chr('{') withName "\'{\'"
     private val rightBrace: Parser<Char> = chr('}') withName "\'}\'"
     // pairs: pair (',' pair)*
     private val pairs: Parser<List<Pair<String, Any?>>> = (pair _and_ _zeroOrMore_(chr(',') _then_ pair))
             .map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> listOf(it.first, it.second) }
     // jsonObject: '{' pairs '}' | '{' '}'
     private val jsonObject: Parser<Map<String, Any?>> =
-            (optionalSpaces then (
+            (OPTIONAL_SPACES then (
                     (leftBrace _then_ pairs _before_ rightBrace map { it: List<Pair<String, Any?>> -> it.toMap() })
                             or
                             (leftBrace _and_ rightBrace map { emptyMap<String, Any?>() })
-                    ) before optionalSpaces)
+                    ) before OPTIONAL_SPACES)
                     .withName("object")
 
     @JvmStatic fun parse(json: String): Map<String, Any?> = jsonObject.parse(json)
     @JvmStatic fun parseFile(file: File): Map<String, Any?> = jsonObject.parseFile(file)
-}
-
-
-object JSONMain {
-    @JvmStatic fun main(args: Array<String>) {
-        if (args.isEmpty())
-            startInterpreter()
-        else
-            printFile(args[0])
-    }
-
-    private fun printFile(path: String) {
-        try {
-            val file = File(path)
-            val result = JSON.parseFile(file)
-            println(result)
-        } catch (e: ParseException) {
-            System.err.println(e.message)
-        }
-    }
-
-    private fun startInterpreter() {
-        while (true) {
-            try {
-                print(">>> ")
-                val optionalInput: String? = readLine()
-                val input = optionalInput ?: exitProcess(1)
-
-                if (input == ":quit") {
-                    exitProcess(0)
-                } else {
-                    val result: Map<String, Any?> = JSON.parse(input)
-                    println(result)
-                }
-            } catch (e: ParseException) {
-                println(e.message)
-            }
-        }
-    }
 }

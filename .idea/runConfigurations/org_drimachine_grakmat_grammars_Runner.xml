@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="org.drimachine.grakmat.JSONMain" type="JetRunConfigurationType" factoryName="Kotlin">
+  <configuration default="false" name="org.drimachine.grakmat.grammars.Runner" type="JetRunConfigurationType" factoryName="Kotlin">
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <extension name="io.halik.intellij.runner.RunConfigurationExtension" debug="false" experimentalCollectionsSupport="false" includePattern="" excludePattern="" version="2" />
-    <option name="MAIN_CLASS_NAME" value="org.drimachine.grakmat.JSONMain" />
+    <option name="MAIN_CLASS_NAME" value="org.drimachine.grakmat.grammars.Runner" />
     <option name="VM_PARAMETERS" value="" />
-    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="PROGRAM_PARAMETERS" value="url" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />

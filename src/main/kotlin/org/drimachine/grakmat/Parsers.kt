@@ -248,7 +248,7 @@ fun anyOf(included: Iterable<Char>): Parser<Char> = IncludedCharParser(included.
  */
 class IncludedCharParser(val included: Iterable<Char>) : Parser<Char> {
     override val expectedDescription: String
-        get() = "[${included.joinToString("")}]"
+        get() = "any char of ${included.joinToString(prefix = "{", separator = ", ", postfix = "}")}"
 
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {
@@ -288,7 +288,7 @@ fun except(excluded: Iterable<Char>): Parser<Char> = ExcludedCharParser(excluded
  */
 class ExcludedCharParser(val excluded: Iterable<Char>) : Parser<Char> {
     override val expectedDescription: String
-        get() = "any char excluding ${excluded.joinToString()}"
+        get() = "any char except ${excluded.joinToString(prefix = "{", separator = ", ", postfix = "}")}"
 
     override fun eat(source: Source, input: String): Result<Char> {
         if (input.isEmpty()) {

@@ -20,10 +20,13 @@ package org.drimachine.grakmat
 import java.util.*
 
 
-var space: Parser<Char> = anyOf(' ', '\t', '\r', '\n') withName "space"
-val optionalSpaces: Parser<String> = zeroOrMore(space)
+var SPACE:           Parser<Char>   = anyOf(' ', '\t', '\r', '\n') withName "space"
+val SPACES:          Parser<String> = oneOrMore(SPACE)
         .map { spaces: List<Char> -> spaces.joinToString("") }
         .withName("spaces")
+val OPTIONAL_SPACES: Parser<String> = zeroOrMore(SPACE)
+        .map { spaces: List<Char> -> spaces.joinToString("") }
+        .withName("optional spaces")
 
 
 /**
@@ -50,7 +53,7 @@ class SpacedAndParser<out A, out B>(val leftParser: Parser<A>, val rightParser: 
 
     override fun eat(source: Source, input: String): Result<Pair<A, B>> {
         val leftResult: Result<A>        = leftParser.eat(source,  input)
-        val middleResult: Result<String> = optionalSpaces.eat(source, leftResult.remainder)
+        val middleResult: Result<String> = OPTIONAL_SPACES.eat(source, leftResult.remainder)
         val rightResult: Result<B>       = rightParser.eat(source, middleResult.remainder)
         return Result(leftResult.value to rightResult.value, rightResult.remainder)
     }
@@ -79,7 +82,7 @@ class SpacedRepeatParser<out A>(val target: Parser<A>, val times: Int) : Parser<
         for (time in 1..times) {
             val next: Result<A> = target.eat(source, remainder)
             list.add(next.value)
-            val spacesResult: Result<String> = optionalSpaces.eat(source, next.remainder)
+            val spacesResult: Result<String> = OPTIONAL_SPACES.eat(source, next.remainder)
             remainder = spacesResult.value
         }
 
@@ -124,7 +127,7 @@ class SpacedAtLeastParser<out A>(val target: Parser<A>, val times: Int) : Parser
             val (next: A?, nextRemainder: String) = optional(target).eat(source, remainder)
             if (next != null) {
                 list.add(next)
-                val spacesResult: Result<String> = optionalSpaces.eat(source, nextRemainder)
+                val spacesResult: Result<String> = OPTIONAL_SPACES.eat(source, nextRemainder)
                 remainder = spacesResult.remainder
             } else {
                 remainder = nextRemainder
@@ -160,7 +163,7 @@ class SpacedRangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : P
                 list.add(next)
                 remainder = nextRemainder
             } else {
-                val spacesResult: Result<String> = optionalSpaces.eat(source, nextRemainder)
+                val spacesResult: Result<String> = OPTIONAL_SPACES.eat(source, nextRemainder)
                 remainder = spacesResult.remainder
             }
         } while (next != null && list.size < bounds.endInclusive)
