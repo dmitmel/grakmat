@@ -99,7 +99,7 @@ But, it's better to use combinators everywhere it's possible, because recursion 
 [[spaced-combinators]]
 == Note: Spaced combinators
 
-Also, there're some {spaced-combinators-link}[spaced-combinators] that insert spaces between results. Here's the list
+Also, there're some {spaced-combinators-link}[spaced combinators] that insert spaces between results. Here's the list
 of them:
 
 * `\_zeroOrMore_(a)`
