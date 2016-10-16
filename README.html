@@ -1099,47 +1099,6 @@ A <a href="https://github.com/drimachine/grakmat/blob/master/src/main/kotlin/org
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Spaces Combinators</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><em>zeroOrMore</em>(a)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>zeroOrMore(a)</code>, but inserts spaces between results.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code><em>oneOrMore</em>(a)</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>oneOrMore(a)</code>, but inserts spaces between results.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>and</em> b</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a and b</code>, but inserts spaces between <code>a</code> and <code>b</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>then</em> b</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code><em>and</em></code>, but returns the result of <code>b</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>before</em> b</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code><em>and</em></code>, but returns the result of <code>a</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>repeat</em> n</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a repeat n</code>, but inserts spaces between results.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>atLeast</em> n</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a atLeast n</code>, but inserts spaces between results.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a <em>inRange</em> start..end</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Just like <code>a inRange</code>, but inserts spaces between results.</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect2">
 <h3 id="step-2-parse">Step 2: Parse<a class="header-anchor" href="#step-2-parse"><svg width="26px" height="26px" viewBox="0 0 512 512"><path fill="#BA3925" d="M482.25,210.752L346.5,346.502c-37.5,37.5-98.25,37.5-135.75,0l-45.25-45.25l45.25-45.25l45.25,45.25                                                                 c12.5,12.469,32.781,12.5,45.25,0L437,165.502c12.469-12.484,12.469-32.781,0-45.266l-45.25-45.25                                                                 c-12.469-12.469-32.781-12.469-45.25,0l-48.469,48.469c-22.469-13.219-48-18.891-73.281-17.188l76.5-76.531                                                                 c37.5-37.484,98.281-37.484,135.75,0l45.25,45.25C519.75,112.471,519.75,173.268,482.25,210.752z                                                                 M213.938,388.564L165.5,437.002                                                                 c-12.5,12.5-32.781,12.469-45.25,0L75,391.752c-12.5-12.469-12.5-32.75,0-45.25l135.75-135.75c12.469-12.469,32.781-12.469,45.25,0                                                                 l45.25,45.25l45.25-45.25l-45.25-45.25c-37.5-37.484-98.25-37.484-135.75,0L29.75,301.252c-37.5,37.5-37.5,98.281,0,135.75                                                                 L75,482.252c37.469,37.5,98.25,37.5,135.75,0l76.5-76.5C261.969,407.439,236.5,401.752,213.938,388.564z"></path></svg></a>
@@ -1190,28 +1149,28 @@ of them:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><code><em>zeroOrMore</em>(a)</code></p>
+<p><code>_zeroOrMore_(a)</code></p>
 </li>
 <li>
-<p><code><em>oneOrMore</em>(a)</code></p>
+<p><code>_oneOrMore_(a)</code></p>
 </li>
 <li>
-<p><code>a <em>and</em> b</code></p>
+<p><code>a _and_ b</code></p>
 </li>
 <li>
-<p><code>a <em>then</em> b</code></p>
+<p><code>a _then_ b</code></p>
 </li>
 <li>
-<p><code>a <em>before</em> b</code></p>
+<p><code>a _before_ b</code></p>
 </li>
 <li>
-<p><code>a <em>repeat</em> n</code></p>
+<p><code>a _repeat_ n</code></p>
 </li>
 <li>
-<p><code>a <em>atLeast</em> n</code></p>
+<p><code>a _atLeast_ n</code></p>
 </li>
 <li>
-<p><code>a <em>inRange</em> start..end</code></p>
+<p><code>a _inRange_ start..end</code></p>
 </li>
 </ul>
 </div>
@@ -1220,7 +1179,7 @@ of them:</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-16 13:39:03 EEST
+Last updated 2016-10-16 13:42:19 EEST
 </div>
 </div>
 <script>/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript+asciidoc+bash+c+brainfuck+csharp+cpp+ruby+css-extras+git+groovy+haskell+http+java+json+kotlin+markdown+objectivec+processing+properties+python+scala+sql+yaml&plugins=line-highlight+line-numbers+autolinker+previewer-base+previewer-color+previewer-gradient+previewer-easing+previewer-time+previewer-angle */

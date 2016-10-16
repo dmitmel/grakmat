@@ -66,18 +66,6 @@ You can create parsers using {parser-creators-link}[parser creators] and combine
 | `a withName name`             | Returns parser, which will use it's `name` in description of the expected.
 |===
 
-.Spaces Combinators
-|===
-| `_zeroOrMore_(a)`        | Just like `zeroOrMore(a)`, but inserts spaces between results.
-| `_oneOrMore_(a)`         | Just like `oneOrMore(a)`, but inserts spaces between results.
-| `a _and_ b`              | Just like `a and b`, but inserts spaces between `a` and `b`.
-| `a _then_ b`             | Just like `_and_`, but returns the result of `b`.
-| `a _before_ b`           | Just like `_and_`, but returns the result of `a`.
-| `a _repeat_ n`           | Just like `a repeat n`, but inserts spaces between results.
-| `a _atLeast_ n`          | Just like `a atLeast n`, but inserts spaces between results.
-| `a _inRange_ start..end` | Just like `a inRange`, but inserts spaces between results.
-|===
-
 [[step-2-parse]]
 === Step 2: Parse
 
@@ -114,11 +102,11 @@ But, it's better to use combinators everywhere it's possible, because recursion 
 Also, there're some {spaced-combinators-link}[spaced-combinators] that insert spaces between results. Here's the list
 of them:
 
-* `_zeroOrMore_(a)`
-* `_oneOrMore_(a)`
-* `a _and_ b`
-* `a _then_ b`
-* `a _before_ b`
-* `a _repeat_ n`
-* `a _atLeast_ n`
-* `a _inRange_ start..end`
+* `\_zeroOrMore_(a)`
+* `\_oneOrMore_(a)`
+* `a \_and_ b`
+* `a \_then_ b`
+* `a \_before_ b`
+* `a \_repeat_ n`
+* `a \_atLeast_ n`
+* `a \_inRange_ start..end`
