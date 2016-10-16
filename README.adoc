@@ -5,6 +5,8 @@
 :parser-creators-link:    {sources-prefix}/Parsers.kt
 :combinators-link:        {sources-prefix}/Combinators.kt
 :spaced-combinators-link: {sources-prefix}/SpacedCombinators.kt
+:kotlin-stdlib-link:  http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.0.4
+:kotlin-runtime-link: http://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.0.4
 :toc: left
 :icons: font
 :toclevels: 3
@@ -27,6 +29,8 @@ dependencies {
     compile file("/path/to/grakmat-xxx.jar")
 }
 ----
+
+Library has no dependencies, except {kotlin-stdlib-link}[Kotlin standard library] and {kotlin-runtime-link}[Kotlin runtime].
 
 [[step-1-parsers]]
 === Step 1: Parsers

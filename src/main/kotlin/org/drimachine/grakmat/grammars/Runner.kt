@@ -16,9 +16,6 @@
 
 package org.drimachine.grakmat.grammars
 
-import net.sourceforge.argparse4j.*
-import net.sourceforge.argparse4j.impl.*
-import net.sourceforge.argparse4j.inf.*
 import org.drimachine.grakmat.ParseException
 import java.io.File
 import kotlin.system.exitProcess
@@ -26,35 +23,42 @@ import kotlin.system.exitProcess
 object Runner {
     @JvmStatic
     fun main(args: Array<String>) {
-        val parser: ArgumentParser = ArgumentParsers.newArgumentParser("grakmat")
-            .description("Runner for built-in grammars.")
-
-        parser.addArgument("grammar")
-                .type(String::class.java)
-                .help("Grammar to parse.")
-                .choices("json", "url", "uri")
-        parser.addArgument("file")
-                .type(String::class.java)
-                .help("File to parse content from (default - read from STDIN).")
-                .nargs("?")
-        parser.addArgument("-t", "--trace")
-                .help("Show stack trace on parse errors.")
-                .action(Arguments.storeTrue())
-
         try {
-            val result: Namespace = parser.parseArgs(args)
-            val grammar: String = result.getString("grammar")
-            val file: String? = result.getString("file")
-            val trace: Boolean = result.getBoolean("trace")
+            val (grammar, file, trace) = parseArguments(args)
 
             val parseFunction: (String) -> Any = createParseFunctionForGrammar(grammar)
             val parseFileFunction: (File) -> Any = createParseFileFunctionForGrammar(grammar)
             val handleFunction: (ParseException) -> Unit = createHandleFunction(trace)
             val parseAction = createParseAction(file, parseFunction, parseFileFunction, handleFunction)
             parseAction()
-        } catch (e: ArgumentParserException) {
-            parser.handleError(e)
+        } catch (e: IllegalArgumentException) {
+            System.err.println("grakmat: ${e.message}")
         }
+    }
+
+    private fun parseArguments(args: Array<String>): Triple<String, File?, Boolean> {
+        val (flags, positionals) = args.partition { it.startsWith("-") }
+        val trace: Boolean = ("-t" in flags || "--trace" in flags)
+        val flagsWithoutTrace = flags.filterNot { it == "-t" || it == "--trace" }
+        if (flagsWithoutTrace.isNotEmpty())
+            throw IllegalArgumentException("unexpected flags: ${flagsWithoutTrace.joinToString()}")
+
+        val grammar: String = positionals.getOrNull(0) ?: throw IllegalArgumentException("expected grammar argument")
+        val file: File? = positionals.getOrNull(1)?.let { path -> parseFileFromPath(path) }
+        if (positionals.size > 2)
+            throw IllegalArgumentException("unexpected positionals: ${positionals.joinToString()}")
+
+        return Triple(grammar, file, trace)
+    }
+
+    private fun parseFileFromPath(path: String): File {
+        val file = File(path)
+        if (file.exists() && file.isFile)
+            return file
+        else if (file.exists() && file.isDirectory)
+            throw IllegalArgumentException("${file.absolutePath}: is a directory")
+        else
+            throw IllegalArgumentException("${file.absolutePath}: no such file or directory")
     }
 
     private fun createParseFunctionForGrammar(grammar: String): (String) -> Any =
@@ -62,7 +66,7 @@ object Runner {
                 "json" -> { input -> JSON.parse(input) }
                 "url"  -> { input -> URL.parse(input)  }
                 "uri"  -> { input -> URI.parse(input)  }
-                else -> error("Unreachable code")
+                else   -> throw IllegalArgumentException("$grammar: no such grammar")
             }
 
     private fun createParseFileFunctionForGrammar(grammar: String): (File) -> Any =
@@ -70,7 +74,7 @@ object Runner {
                 "json" -> { file -> JSON.parseFile(file) }
                 "url"  -> { file -> URL.parseFile(file)  }
                 "uri"  -> { file -> URI.parseFile(file)  }
-                else -> error("Unreachable code")
+                else   -> throw IllegalArgumentException("$grammar: no such grammar")
             }
 
     private fun createHandleFunction(trace: Boolean): (ParseException) -> Unit =
@@ -79,19 +83,18 @@ object Runner {
             else
                 { e -> println(e.message) }
 
-    private fun createParseAction(filePath: String?,
+    private fun createParseAction(file: File?,
                                   parseFunction: (String) -> Any, parseFileFunction: (File) -> Any,
                                   handleFunction: (ParseException) -> Unit): () -> Any =
-            if (filePath == null)
-                createInterpreterAction(parseFunction, handleFunction)
+            if (file != null)
+                createParseFileAction(file, parseFileFunction, handleFunction)
             else
-                createParseFileAction(filePath, parseFileFunction, handleFunction)
+                createInterpreterAction(parseFunction, handleFunction)
 
-    private fun createParseFileAction(filePath: String, parseFileFunction: (File) -> Any,
+    private fun createParseFileAction(file: File, parseFileFunction: (File) -> Any,
                                       handleFunction: (ParseException) -> Unit): () -> Any =
             {    // Start of lambda
                 try {
-                    val file = File(filePath)
                     val result = parseFileFunction(file)
                     println(result)
                 } catch (e: ParseException) {

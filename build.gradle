@@ -48,7 +48,6 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    compile "net.sourceforge.argparse4j:argparse4j:$argparse4jVersion"
     testCompile "junit:junit:$junitVersion"
 }
 ///////////////////////// END OF DEPENDENCIES /////////////////////////
@@ -65,11 +64,17 @@ task docsZip(type: Zip, group: 'documentation', description: 'Assemble a zip arc
     from dokka.outputDirectory
 }
 
+jar {
+    manifest {
+        attributes('Main-Class': 'org.drimachine.grakmat.grammars.Runner')
+    }
+}
+
 shadowJar {
     classifier = 'fatjar'
 }
 
-tasks.withType(Jar) {
+tasks.withType(Zip) {     // Also will match tasks with type 'Jar'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     // Adding license file, and README's
     from files("$projectDir/LICENSE", "$projectDir/README.adoc", "$projectDir/README.html")
