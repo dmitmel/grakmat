@@ -1,3 +1,0 @@
-grammar name;
-
-mainRule = "Hello!" { if (a) { doA(); } else { doB(); } };
