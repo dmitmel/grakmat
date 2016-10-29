@@ -13,6 +13,3 @@ build/
 build-asciidoc.rb
 prism.*
 asciidoc-theme-extensions.css
-
-## Experimental grammars
-src/main/kotlin/org/drimachine/grakmat/grammars/GrammarDefinitionLanguage.kt
