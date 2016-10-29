@@ -263,16 +263,28 @@ object GrammarDefinitionLanguage {
     private val expression: Parser<Node> = (combinator or baseExpression)
             .withName("expression")
 
+    private val nestedBlockRef: Parser<String> = ref { nestedBlock }
+    // fragment codeChar: (String) = [^{}];
+    private val codeChar: Parser<String> = except('{', '}') map Char::toString
+    // fragment nestedBlock: (String) = '{' > (nestedBlock | codeChar) < '}';
+    private val nestedBlock: Parser<String> = (LEFT_BRACE then zeroOrMore(nestedBlockRef or codeChar) before RIGHT_BRACE)
+            .map { it: List<String> -> "{${it.joinToString("")}}" }
+    // code: (String) = '{' > (nestedBlock | codeChar)* < '}' { ... };
+    private val code: Parser<String> = (LEFT_BRACE then zeroOrMore(nestedBlock or codeChar) before RIGHT_BRACE)
+            .map { it: List<String> -> it.joinToString("") }
+            .withName("code")
+
     // ruleType: (String) = '(' -> ([^)])+ <- ')' { ... };
     private val ruleType: Parser<String> = (char('(') _then_ oneOrMore(except(')')) _before_ char(')'))
             .map { it: List<Char> -> it.joinToString("") }
             .withName("type")
-    // rule = ("fragment")? < SPACES IDENTIFIER, (':' -> ruleType) <- '=', expression { ... };
-    private val rule: Parser<Node> = (optional(str("fragment")) before SPACES and IDENTIFIER _and_ optional(COLON _then_ ruleType) _before_ EQUALS_SIGN _and_ expression)
-            .map { it: Pair<Pair<Pair<String?, String>, String?>, Node> ->
-                val (left1, expression: Node) = it
-                val (left2, type: String?) = left1
-                val (fragment: String?, name: String) = left2
+    // rule = ("fragment")? < SPACES IDENTIFIER, (':' -> ruleType) <- '=', expression, (code)? { ... };
+    private val rule: Parser<Node> = (optional(str("fragment")) before SPACES and IDENTIFIER _and_ optional(COLON _then_ ruleType) _before_ EQUALS_SIGN _and_ expression _and_ optional(code))
+            .map { it: Pair<Pair<Pair<Pair<String?, String>, String?>, Node>, String?> ->
+                val (left1, code: String?) = it
+                val (left2, expression: Node) = left1
+                val (left3, type: String?) = left2
+                val (fragment: String?, name: String) = left3
 
                 astNode("rule") {
                     if (fragment != null)
@@ -281,19 +293,24 @@ object GrammarDefinitionLanguage {
                     if (type != null)
                         +astNode("type", type)
                     +astNode("expression", listOf(expression))
+                    if (code != null)
+                        +astNode("code", code)
                 }
             }
             .withName("rule")
-    // rule = IDENTIFIER, (':' -> ruleType) <- '=', expression { ... };
-    private val mainRule: Parser<Node> = (IDENTIFIER _and_ optional(COLON _then_ ruleType) _before_ EQUALS_SIGN _and_ expression)
-            .map { it: Pair<Pair<String, String?>, Node> ->
-                val (left1, expression: Node) = it
-                val (name: String, type: String?) = left1
+    // rule = IDENTIFIER, (':' -> ruleType) <- '=', expression, (code)? { ... };
+    private val mainRule: Parser<Node> = (IDENTIFIER _and_ optional(COLON _then_ ruleType) _before_ EQUALS_SIGN _and_ expression _and_ code)
+            .map { it: Pair<Pair<Pair<String, String?>, Node>, String?> ->
+                val (left1, code: String?) = it
+                val (left2, expression: Node) = left1
+                val (name: String, type: String?) = left2
                 astNode("mainRule") {
                     +astNode("name", name)
                     if (type != null)
                         +astNode("type", type)
                     +astNode("expression", listOf(expression))
+                    if (code != null)
+                        +astNode("code", code)
                 }
             }
             .withName("main rule")

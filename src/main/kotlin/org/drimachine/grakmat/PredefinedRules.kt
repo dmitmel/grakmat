@@ -95,11 +95,12 @@ object Numbers {
 
     // fragment zeroInteger: (Int) = '0' { ... };
     private val zeroInteger: Parser<Int> = char('0') map { 0 }
-    // fragment positiveInteger: (Int) = [1-9] ([0-9])* { ... };
-    private val positiveInteger: Parser<Int> = (anyOf('1'..'9') and zeroOrMore(DIGIT))
+    // POSITIVE_INTEGER: (Int) = [1-9] ([0-9])* { ... };
+    val POSITIVE_INTEGER: Parser<Int> = (anyOf('1'..'9') and zeroOrMore(DIGIT))
             .map { (headDigit: Char, tailDigits: List<Char>) -> listOf(headDigit, tailDigits).digitsToInt() }
+            .withName("POSITIVE INTEGER")
     // fragment zeroOrPositiveInteger: (Int) = zeroInteger | positiveInteger;
-    private val zeroOrPositiveInteger: Parser<Int> = zeroInteger or positiveInteger
+    private val zeroOrPositiveInteger: Parser<Int> = zeroInteger or POSITIVE_INTEGER
     // INTEGER: (Int) = ('-')? positiveInteger { ... };
     val INTEGER: Parser<Int> = (optional(char('-')) and zeroOrPositiveInteger)
             .map { (minus: Char?, integer: Int) ->
