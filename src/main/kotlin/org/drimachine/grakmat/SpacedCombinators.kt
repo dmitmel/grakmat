@@ -20,13 +20,13 @@ package org.drimachine.grakmat
 import java.util.*
 
 
-var SPACE:           Parser<Char>   = anyOf(' ', '\t', '\r', '\n') withName "space"
+var SPACE:           Parser<Char>   = anyOf(' ', '\t', '\r', '\n') withName "SPACE"
 val SPACES:          Parser<String> = oneOrMore(SPACE)
         .map { spaces: List<Char> -> spaces.joinToString("") }
-        .withName("spaces")
+        .withName("SPACES")
 val OPTIONAL_SPACES: Parser<String> = zeroOrMore(SPACE)
         .map { spaces: List<Char> -> spaces.joinToString("") }
-        .withName("optional spaces")
+        .withName("OPTIONAL SPACES")
 
 
 /**

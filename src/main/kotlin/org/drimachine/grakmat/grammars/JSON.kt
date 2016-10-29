@@ -22,42 +22,25 @@ import java.io.File
 object JSON {
     private fun <A> listOf(head: A, tail: List<A>): List<A> = arrayListOf(head).apply { addAll(tail) }
 
-    // Forward references
     private val jsonObjectRef: Parser<Map<String, Any?>> = ref { jsonObject }
     private val valueRef: Parser<Any?> = ref { value }
 
-    private val leftSquareBracket: Parser<Char> = chr('[') withName "\'[\'"
-    private val rightSquareBracket: Parser<Char> = chr(']') withName "\']\'"
-    // values: value (',' value)*
-    private val values: Parser<List<Any?>> = (valueRef _and_ _zeroOrMore_(chr(',') _then_ valueRef))
-            .map { it: Pair<Any?, List<Any?>> -> listOf(it.first, it.second) }
-    // array: '[' values ']'
-    private val array: Parser<List<Any?>> = (leftSquareBracket _then_ values _before_ rightSquareBracket)
+    // values: (List<Any?>) = value, (',' -> value)* { ... };
+    private val values: Parser<List<Any?>> = (valueRef _and_ _zeroOrMore_(char(',') _then_ valueRef))
+            .map { (head: Any?, tail: List<Any?>) -> listOf(head, tail) }
+            .withName("values")
+    // array: (List<Any?>) = '[' -> values <- ']';
+    private val array: Parser<List<Any?>> = (LEFT_BRACKET _then_ values _before_ RIGHT_BRACKET)
             .withName("array")
 
-    // Digit: [0-9]
-    private val digit: Parser<Char> = anyOf('0'..'9')
-    // integer: digit | digit digit | digit digit digit | ... | digit digit digit digit digit digit digit digit digit
-    private val integer: Parser<Int> = digit inRange 1..9 map { digits: List<Char> -> digitsToInteger(digits) }
-    // float: integer '.' (digit)+
-    private val float: Parser<Float> = integer before chr('.') and oneOrMore(digit) map { parts: Pair<Int, List<Char>> -> partsToFloat(parts) }
-    // number: float | integer
-    @Suppress("UNCHECKED_CAST")
-    private val number: Parser<Number> = ((float or integer) as Parser<Number>)
+    private val number: Parser<Number> = Numbers.NUMBER
             .withName("number")
 
-    private fun digitsToInteger(digits: List<Char>): Int = digits.joinToString("").toInt()
-
-    private fun partsToFloat(parts: Pair<Int, List<Char>>): Float {
-        val (naturalPart, fracDigits) = parts
-        val frac = fracDigits.joinToString("")
-        return "$naturalPart.$frac".toFloat()
-    }
-
-    // EscapedCharacter: '\\' ('"' | '\\' | 'b' | 'f' | 'n' | 'r' | 't' | 'v')
-    private val escapedCharacter: Parser<Char> = chr('\\') then anyOf('\"', '\\', 'b', 'f', 'n', 'r', 't', 'v') map {
+    // EscapedCharacter: '\\' ('"' | '\'' | '\\' | 'b' | 'f' | 'n' | 'r' | 't' | 'v')
+    private val escapedCharacter: Parser<Char> = char('\\') then anyOf('\"', '\'', '\\', 'b', 'f', 'n', 'r', 't', 'v') map {
         when (it) {
             '\"' -> '\"'
+            '\'' -> '\''
             '\\' -> '\\'
             'b'  -> '\b'
             'f'  -> 0x0C.toChar()
@@ -70,13 +53,13 @@ object JSON {
     }
     // Character: ~('"' | '\\') | EscapedCharacter
     private val character: Parser<Char> = except('\"', '\\') or escapedCharacter withName "character"
-    private val quote: Parser<Char> = chr('\"') withName "\'\"\'"
+    private val quote: Parser<Char> = char('\"') withName "\'\"\'"
     // stringLiteral: '"' (Character)+ '"'
     private val stringLiteral: Parser<String> = (quote then zeroOrMore(character) before quote)
             .map { it.joinToString("") }
             .withName("string literal")
 
-    private val colon: Parser<Char> = chr(':') withName "\':\'"
+    private val colon: Parser<Char> = char(':') withName "\':\'"
     private val trueValue: Parser<Boolean> = str("true")  map { true }
     private val falseValue: Parser<Boolean> = str("false") map { false }
     private val nullValue: Parser<Any?> = str("null")  map { null }
@@ -87,10 +70,10 @@ object JSON {
     private val pair: Parser<Pair<String, Any?>> = (stringLiteral _before_ colon _and_ value)
             .withName("pair")
 
-    private val leftBrace: Parser<Char> = chr('{') withName "\'{\'"
-    private val rightBrace: Parser<Char> = chr('}') withName "\'}\'"
+    private val leftBrace: Parser<Char> = char('{') withName "\'{\'"
+    private val rightBrace: Parser<Char> = char('}') withName "\'}\'"
     // pairs: pair (',' pair)*
-    private val pairs: Parser<List<Pair<String, Any?>>> = (pair _and_ _zeroOrMore_(chr(',') _then_ pair))
+    private val pairs: Parser<List<Pair<String, Any?>>> = (pair _and_ _zeroOrMore_(char(',') _then_ pair))
             .map { it: Pair<Pair<String, Any?>, List<Pair<String, Any?>>> -> listOf(it.first, it.second) }
     // jsonObject: '{' pairs '}' | '{' '}'
     private val jsonObject: Parser<Map<String, Any?>> =

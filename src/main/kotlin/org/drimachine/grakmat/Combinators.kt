@@ -49,7 +49,7 @@ class OrParser<out A>(val leftParser: Parser<A>, val rightParser: Parser<A>) : P
     override fun eat(source: Source, input: String): Result<A> =
         try {
             leftParser.eat(source, input)
-        } catch (leftEx: ParseException) {
+        } catch (leftEx: CatchableParseException) {
             try {
                 rightParser.eat(source, input)
             } catch (rightEx: UnexpectedEOFException) {
@@ -318,4 +318,29 @@ class RangedParser<out A>(val target: Parser<A>, val bounds: IntRange) : Parser<
     }
 
     override fun toString(): String = expectedDescription
+}
+
+
+/**
+ * Creates parser, that throws [NotCatchableParseException] if there was a [CatchableParseException].
+ *
+ * @param target Target parser.
+ */
+fun <A> required(target: Parser<A>): Parser<A> = RequiredParser(target)
+
+/**
+ * @see required
+ */
+class RequiredParser<out A>(val target: Parser<A>) : Parser<A> {
+    override val expectedDescription: String
+        get() = target.expectedDescription
+
+    override fun eat(source: Source, input: String): Result<A> =
+            try {
+                target.eat(source, input)
+            } catch (e: UnexpectedEOFException) {
+                throw NotCatchableUnexpectedEOFException(e.expected, e.errorPosition, e.source)
+            } catch (e: UnexpectedTokenException) {
+                throw NotCatchableUnexpectedTokenException(e.got, e.expected, e.errorPosition, e.source)
+            }
 }

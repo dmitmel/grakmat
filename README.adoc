@@ -64,6 +64,7 @@ You can create parsers using {parser-creators-link}[parser creators] and combine
 | `a atLeast n`                 | Just like `a repeat n`, but match *at least* `n` times.
 | `a inRange start..end`        | Just like `a repeat n`, but match **any count from `start` to `end`**.
 | `a withName name`             | Returns parser, which will use it's `name` in description of the expected.
+| `require(a)`                  | Returns parser, which will throw not catchable parse exceptions, if an error occurs.
 |===
 
 [[step-2-parse]]

@@ -21,7 +21,7 @@
     <patterns />
     <method>
       <option name="Make" enabled="false" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks="testClasses" externalProjectPath="$PROJECT_DIR$" vmOptions="" scriptParameters="" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Fast Build - testClasses" run_configuration_type="BashConfigurationType" />
     </method>
   </configuration>
 </component>

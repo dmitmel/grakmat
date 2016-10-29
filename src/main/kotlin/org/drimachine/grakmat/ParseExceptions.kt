@@ -56,12 +56,44 @@ open class ParseException(val errorDescription: String, val errorPosition: Error
 }
 
 /**
+ * Superclass for all exceptions, that **can't be caught** by combinators.
+ */
+open class NotCatchableParseException(errorDescription: String, errorPosition: ErrorPosition, source: Source) : ParseException(errorDescription, errorPosition, source)
+
+/**
+ * Not catchable parse exception for unexpected EOF.
+ *
+ * @param expected Expected token.
+ */
+class NotCatchableUnexpectedEOFException(val expected: String, errorPosition: ErrorPosition, source: Source)
+: NotCatchableParseException(
+        "Expected $expected, but got <EOF>",
+        ErrorPosition(errorPosition.lineNumber,
+                errorPosition.lineSource.length + 1,    // Making column number of error position point after the end of source
+                errorPosition.lineSource),
+        source)
+
+/**
+ * Not catchable parse exception for unexpected token.
+ *
+ * @param expected Expected token.
+ */
+class NotCatchableUnexpectedTokenException(val got: String?, val expected: String, errorPosition: ErrorPosition, source: Source)
+: NotCatchableParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition, source)
+
+
+/**
+ * Superclass for all exceptions, that **can be caught** by combinators.
+ */
+open class CatchableParseException(errorDescription: String, errorPosition: ErrorPosition, source: Source) : ParseException(errorDescription, errorPosition, source)
+
+/**
  * Parse exception for unexpected EOF.
  *
  * @param expected Expected token.
  */
 class UnexpectedEOFException(val expected: String, errorPosition: ErrorPosition, source: Source)
-: ParseException(
+: CatchableParseException(
         "Expected $expected, but got <EOF>",
         ErrorPosition(errorPosition.lineNumber,
                 errorPosition.lineSource.length + 1,    // Making column number of error position point after the end of source
@@ -74,4 +106,4 @@ class UnexpectedEOFException(val expected: String, errorPosition: ErrorPosition,
  * @param expected Expected token.
  */
 class UnexpectedTokenException(val got: String?, val expected: String, errorPosition: ErrorPosition, source: Source)
-: ParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition, source)
+: CatchableParseException("Expected $expected" + (if (got != null) ", but got \'$got\'" else ""), errorPosition, source)

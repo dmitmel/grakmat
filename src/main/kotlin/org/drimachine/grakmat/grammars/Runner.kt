@@ -63,17 +63,15 @@ object Runner {
 
     private fun createParseFunctionForGrammar(grammar: String): (String) -> Any =
             when (grammar) {
-                "json" -> { input -> JSON.parse(input) }
-                "url"  -> { input -> URL.parse(input)  }
-                "uri"  -> { input -> URI.parse(input)  }
+                "json" -> { input -> JSON.parse(input)                      }
+                "gdl"  -> { input -> GrammarDefinitionLanguage.parse(input) }
                 else   -> throw IllegalArgumentException("$grammar: no such grammar")
             }
 
     private fun createParseFileFunctionForGrammar(grammar: String): (File) -> Any =
             when (grammar) {
-                "json" -> { file -> JSON.parseFile(file) }
-                "url"  -> { file -> URL.parseFile(file)  }
-                "uri"  -> { file -> URI.parseFile(file)  }
+                "json" -> { file -> JSON.parseFile(file)                      }
+                "gdl"  -> { file -> GrammarDefinitionLanguage.parseFile(file) }
                 else   -> throw IllegalArgumentException("$grammar: no such grammar")
             }
 
